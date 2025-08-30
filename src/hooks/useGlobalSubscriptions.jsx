@@ -1,0 +1,283 @@
+import { FREIGHTER_ID } from "@creit.tech/stellar-wallets-kit";
+import { useEffect, useRef } from "react";
+
+import { LS_FREIGHTER_ACCOUNT_CHANGE_IMMEDIATELY } from "constants/local-storage";
+import { MainRoutes } from "constants/routes";
+import { LOBSTR_CONNECTION_KEY } from "constants/session-storage";
+
+import PromisedTimeout from "helpers/promised-timeout";
+
+import useAssetsStore from "store/assetsStore/useAssetsStore";
+import {
+	clearSavedAuthData,
+	getSavedAuthData,
+} from "store/authStore/auth-helpers";
+import { LoginTypes } from "store/authStore/types";
+import useAuthStore from "store/authStore/useAuthStore";
+
+import { AssetsEvent } from "services/assets.service";
+import {
+	AssetsService,
+	LedgerService,
+	LobstrExtensionService,
+	ModalService,
+	SorobanService,
+	StellarService,
+	ToastService,
+	WalletConnectService,
+	WalletKitService,
+} from "services/globalServices";
+import { LedgerEvents } from "services/ledger.service";
+import { LobstrExtensionEvents } from "services/lobstr-extension.service";
+import { StellarEvents } from "services/stellar.service";
+import { WalletKitEvents } from "services/wallet-kit.service";
+
+import { TokenType } from "types/token";
+import { WalletConnectEvents } from "types/wallet-connect";
+
+import FreighterAccountChangedModal from "components/FreighterAccountChangedModal";
+
+import { useSkipFirstRender } from "./useSkipFirstRender";
+
+const UnfundedErrors = ["Request failed with status code 404", "Not Found"];
+
+export default function useGlobalSubscriptions() {
+	const {
+		login,
+		logout,
+		resolveFederation,
+		account,
+		isLogged,
+		updateAccount,
+		loginErrorText,
+		clearLoginError,
+		enableRedirect,
+	} = useAuthStore();
+
+	const { processNewAssets } = useAssetsStore();
+
+	const accountRef = useRef(account);
+
+	useEffect(() => {
+		const { pubKey, loginType, walletKitId, lobstrConnectionKey, bipPath } =
+			getSavedAuthData();
+
+		if (!loginType) {
+			return;
+		}
+
+		if (loginType === LoginTypes.walletKit) {
+			WalletKitService.restoreLogin(walletKitId, pubKey);
+			login({ pubKey, loginType, walletKitId });
+
+			return;
+		}
+
+		if (loginType === LoginTypes.walletConnect) {
+			WalletConnectService.onAppStart(
+				window.location.pathname === MainRoutes.walletConnect
+			);
+			return;
+		}
+
+		if (loginType === LoginTypes.secret) {
+			clearSavedAuthData();
+			return;
+		}
+
+		if (loginType === LoginTypes.ledger) {
+			LedgerService.reLogin(bipPath, pubKey);
+			return;
+		}
+
+		if (loginType === LoginTypes.lobstr) {
+			// save connection key to session storage
+			sessionStorage.setItem(LOBSTR_CONNECTION_KEY, lobstrConnectionKey);
+		}
+
+		login({ pubKey, loginType });
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
+	useEffect(() => {
+		const unsub = WalletConnectService.event.sub((event) => {
+			if (event.type === WalletConnectEvents.login) {
+				login({
+					pubKey: event.publicKey,
+					loginType: LoginTypes.walletConnect,
+					metadata: event.metadata,
+					topic: event.topic,
+				});
+			}
+			if (event.type === WalletConnectEvents.logout) {
+				ModalService.closeAllModals();
+				PromisedTimeout(500).then(() => {
+					logout();
+				});
+			}
+		});
+
+		return () => unsub();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
+	useEffect(() => {
+		const unsub = LedgerService.event.sub((event) => {
+			if (event.type === LedgerEvents.login) {
+				login({
+					pubKey: event.publicKey,
+					loginType: LoginTypes.ledger,
+					bipPath: event.bipPath,
+				});
+			}
+			if (event.type === LedgerEvents.logout) {
+				logout();
+			}
+		});
+
+		return () => unsub();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
+	const changeFreighterAccount = async (publicKey) => {
+		ModalService.closeAllModals();
+		await PromisedTimeout(500);
+		const path = `${location.pathname}${location.search}`;
+		logout();
+
+		await PromisedTimeout(500);
+
+		enableRedirect(path);
+		login({
+			pubKey: publicKey,
+			loginType: LoginTypes.walletKit,
+			walletKitId: FREIGHTER_ID,
+		});
+		WalletKitService.startFreighterWatching(publicKey);
+	};
+
+	useEffect(() => {
+		const unsub = WalletKitService.event.sub((event) => {
+			if (event.type === WalletKitEvents.login) {
+				login({
+					pubKey: event.publicKey,
+					loginType: LoginTypes.walletKit,
+					walletKitId: event.id,
+				});
+			}
+
+			if (event.type === WalletKitEvents.accountChanged) {
+				const defaultChoice = JSON.parse(
+					localStorage.getItem(LS_FREIGHTER_ACCOUNT_CHANGE_IMMEDIATELY)
+				);
+
+				if (defaultChoice === null) {
+					ModalService.closeAllModals();
+					ModalService.openModal(FreighterAccountChangedModal, {
+						publicKey: event.publicKey,
+					});
+					return;
+				}
+
+				if (defaultChoice) {
+					changeFreighterAccount(event.publicKey);
+				}
+			}
+		});
+
+		return () => unsub();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
+	useEffect(() => {
+		const unsub = LobstrExtensionService.event.sub((event) => {
+			if (event.type === LobstrExtensionEvents.login) {
+				login({
+					pubKey: event.publicKey,
+					loginType: LoginTypes.lobstr,
+				});
+			}
+		});
+
+		return () => unsub();
+	});
+
+	useEffect(() => {
+		const unsub = AssetsService.event.sub((event) => {
+			if (event.type === AssetsEvent.newAssets) {
+				processNewAssets(event.payload);
+			}
+		});
+
+		return () => unsub();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
+	useEffect(() => {
+		if (loginErrorText) {
+			ToastService.showErrorToast(
+				UnfundedErrors.includes(loginErrorText)
+					? "Activate your account"
+					: loginErrorText
+			);
+			clearLoginError();
+		}
+		if (UnfundedErrors.includes(loginErrorText)) {
+			WalletConnectService.logout();
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [loginErrorText]);
+
+	useSkipFirstRender(() => {
+		if (isLogged) {
+			if (account.home_domain) {
+				resolveFederation(account.home_domain, account.accountId());
+			}
+			StellarService.startAccountStream(account.accountId());
+			ToastService.showSuccessToast("Logged in");
+		} else {
+			SorobanService.connection.logoutWithSecret();
+			StellarService.closeAccountStream();
+			WalletKitService.stopFreighterWatching();
+			ToastService.showSuccessToast("Logged out");
+		}
+	}, [isLogged]);
+
+	useEffect(() => {
+		if (account) {
+			account.getSortedBalances().then((res) => {
+				const classicTokens = res.filter(
+					({ token }) => token.type === TokenType.classic
+				);
+				processNewAssets(classicTokens.map(({ token }) => token));
+			});
+			return;
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [account]);
+
+	useEffect(() => {
+		accountRef.current = account;
+	}, [account]);
+
+	useEffect(() => {
+		const unsub = StellarService.event.sub(({ type, account: newAccount }) => {
+			if (
+				type === StellarEvents.accountStream &&
+				StellarService.balancesHasChanges(
+					accountRef.current.balances,
+					newAccount.balances
+				)
+			) {
+				updateAccount(newAccount, accountRef.current.authType);
+			}
+
+			if (type === StellarEvents.handleAccountUpdate) {
+				updateAccount(newAccount, accountRef.current.authType);
+			}
+		});
+
+		return () => unsub();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+}

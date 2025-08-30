@@ -1,0 +1,312 @@
+import * as StellarSdk from "@stellar/stellar-sdk";
+
+import * as React from "react";
+import { useEffect, useState } from "react";
+import styled from "styled-components";
+
+import { getPathPoolsFee } from "api/amm";
+
+import { formatBalance } from "helpers/format-number";
+import { openCurrentWalletIfExist } from "helpers/wallet-connect-helpers";
+
+import { LoginTypes } from "store/authStore/types";
+import useAuthStore from "store/authStore/useAuthStore";
+
+import {
+	ModalService,
+	SorobanService,
+	ToastService,
+} from "services/globalServices";
+import { BuildSignAndSubmitStatuses } from "services/wallet-connect.service";
+
+import { TokenType } from "types/token";
+
+import { flexAllCenter, flexRowSpaceBetween, respondDown } from "web/mixins";
+import { Breakpoints, COLORS } from "web/styles";
+
+import AssetLogo from "./AssetLogo";
+import Button from "./buttons/Button";
+import DotsLoader from "./loaders/DotsLoader";
+import PageLoader from "./loaders/PageLoader";
+import Market from "./Market";
+import {
+	ModalDescription,
+	ModalTitle,
+	ModalWrapper,
+	StickyButtonWrapper,
+} from "./ModalAtoms";
+
+import PathPool from "../web/components/SwapConfirmModal/PathPool/PathPool";
+
+import SuccessModal from "./SuccessModal";
+import { SWAP_SLIPPAGE_ALIAS } from "./SwapSettingsModal";
+
+const AssetsInfo = styled.div`
+	${flexAllCenter};
+	padding: 3.5rem 0;
+	background-color: ${COLORS.lightGray};
+	border-radius: 0.5rem;
+`;
+
+const DescriptionRow = styled.div`
+	${flexRowSpaceBetween};
+	color: ${COLORS.grayText};
+	font-size: 1.6rem;
+	padding: 1.5rem 0;
+
+	span:last-child {
+		color: ${COLORS.paragraphText};
+	}
+`;
+
+const Divider = styled.div`
+	border-bottom: 0.1rem dashed ${COLORS.gray};
+	margin: 3.2rem 0;
+`;
+
+const Pools = styled.div`
+	display: flex;
+	flex-wrap: wrap;
+
+	${respondDown(Breakpoints.md)`
+        flex-direction: column;
+        width: 100%;
+    `}
+`;
+
+const STROOP = 0.0000001;
+
+const SwapConfirmModal = ({ params, confirm }) => {
+	const {
+		base,
+		counter,
+		baseAmount,
+		counterAmount,
+		bestPathXDR,
+		bestPath,
+		bestPools,
+		isSend,
+	} = params;
+	const [fees, setFees] = useState(null);
+	const [swapPending, setSwapPending] = useState(false);
+	const [txFee, setTxFee] = useState(null);
+	const [pathTokens, setPathTokens] = useState(null);
+
+	const { account } = useAuthStore();
+
+	useEffect(() => {
+		Promise.all(
+			bestPath.map((str) => SorobanService.token.parseTokenContractId(str))
+		).then((res) => {
+			setPathTokens(res);
+		});
+	}, [bestPath]);
+
+	useEffect(() => {
+		getPathPoolsFee(bestPools)
+			.then((res) => {
+				setFees(res);
+			})
+			.catch(() => {
+				setFees(0);
+			});
+	}, [bestPools]);
+
+	useEffect(() => {
+		const SLIPPAGE = localStorage.getItem(SWAP_SLIPPAGE_ALIAS) || "1"; // 1%
+		const minAmount = isSend
+			? ((1 - Number(SLIPPAGE) / 100) * Number(counterAmount)).toFixed(
+					counter.decimal ?? 7
+			  )
+			: ((1 + Number(SLIPPAGE) / 100) * Number(baseAmount)).toFixed(
+					base.decimal ?? 7
+			  );
+		SorobanService.amm
+			.getSwapChainedTx(
+				account?.accountId(),
+				base,
+				counter,
+				bestPathXDR,
+				isSend ? baseAmount : counterAmount,
+				minAmount,
+				isSend
+			)
+			.then((res) => {
+				SorobanService.connection.simulateTx(res).then(({ minResourceFee }) => {
+					setTxFee(minResourceFee);
+				});
+			});
+	}, [account, base, baseAmount, bestPathXDR, counter, counterAmount, isSend]);
+
+	const swap = () => {
+		if (account.authType === LoginTypes.walletConnect) {
+			openCurrentWalletIfExist();
+		}
+		setSwapPending(true);
+		const SLIPPAGE = localStorage.getItem(SWAP_SLIPPAGE_ALIAS) || "1"; // 1%
+
+		const minAmount = isSend
+			? ((1 - Number(SLIPPAGE) / 100) * Number(counterAmount)).toFixed(
+					counter.decimal ?? 7
+			  )
+			: ((1 + Number(SLIPPAGE) / 100) * Number(baseAmount)).toFixed(
+					base.decimal ?? 7
+			  );
+
+		let hash;
+
+		SorobanService.amm
+			.getSwapChainedTx(
+				account?.accountId(),
+				base,
+				counter,
+				bestPathXDR,
+				isSend ? baseAmount : counterAmount,
+				minAmount,
+				isSend
+			)
+			.then((tx) => {
+				hash = tx.hash().toString("hex");
+				return account.signAndSubmitTx(tx, true);
+			})
+			.then((res) => {
+				confirm();
+
+				if (!res) {
+					return;
+				}
+
+				if (res.status === BuildSignAndSubmitStatuses.pending) {
+					ToastService.showSuccessToast("More signatures required to complete");
+					return;
+				}
+
+				const sentAmount = isSend
+					? baseAmount
+					: SorobanService.scVal.i128ToInt(res, base.decimal);
+				const receivedAmount = isSend
+					? SorobanService.scVal.i128ToInt(res, counter.decimal)
+					: counterAmount;
+
+				ModalService.openModal(SuccessModal, {
+					assets: [base, counter],
+					amounts: [sentAmount, receivedAmount],
+					title: "Swap Successful",
+					isSwap: true,
+					hash,
+				});
+
+				if (base.type === TokenType.soroban) {
+					ToastService.showSuccessToast(
+						`Payment sent: ${formatBalance(Number(sentAmount))} ${base.code}`
+					);
+				}
+
+				if (counter.type === TokenType.soroban) {
+					ToastService.showSuccessToast(
+						`Payment received: ${formatBalance(Number(receivedAmount))} ${
+							counter.code
+						}`
+					);
+				}
+				setSwapPending(false);
+			})
+			.catch((e) => {
+				const errorMessage =
+					e.message ?? e.toString() ?? "Oops! Something went wrong";
+
+				ToastService.showErrorToast(
+					errorMessage === "The amount is too small to deposit to this pool"
+						? "Price expired, please submit a swap again"
+						: errorMessage
+				);
+				setSwapPending(false);
+			});
+	};
+
+	return (
+		<ModalWrapper>
+			<ModalTitle>Confirm swap</ModalTitle>
+			<ModalDescription>
+				Please check all the details to make a swap
+			</ModalDescription>
+			<AssetsInfo>
+				<Market verticalDirections assets={[base, counter]} />
+			</AssetsInfo>
+			<DescriptionRow>
+				<span>You give</span>
+				<span>
+					{formatBalance(Number(baseAmount))} {base.code}
+				</span>
+			</DescriptionRow>
+			<DescriptionRow>
+				<span>You get (estimate)</span>
+				<span>
+					{formatBalance(Number(counterAmount))} {counter.code}
+				</span>
+			</DescriptionRow>
+			<DescriptionRow>
+				<span>Exchange rate</span>
+				<span>
+					1 {base.code} ={" "}
+					{formatBalance(
+						+(+counterAmount / +baseAmount).toFixed(
+							counter.type === TokenType.soroban ? counter.decimal : 7
+						)
+					)}{" "}
+					{counter.code}
+				</span>
+			</DescriptionRow>
+
+			<DescriptionRow>
+				<span>Maximum transaction fee:</span>
+				<span>
+					{txFee !== null ? (
+						`${formatBalance(
+							+(STROOP * (Number(txFee) + Number(StellarSdk.BASE_FEE))).toFixed(
+								7
+							)
+						)} XLM`
+					) : (
+						<DotsLoader />
+					)}
+				</span>
+			</DescriptionRow>
+
+			<DescriptionRow>
+				<span>Pools:</span>
+				<span />
+			</DescriptionRow>
+
+			{!fees || !pathTokens ? (
+				<PageLoader />
+			) : (
+				<Pools>
+					{bestPools.map((pool, index) => {
+						const base = pathTokens[index];
+						const counter = pathTokens[index + 1];
+						return (
+							<PathPool
+								key={pool}
+								baseIcon={<AssetLogo asset={base} />}
+								counterIcon={<AssetLogo asset={counter} />}
+								fee={fees.get(pool)}
+								address={pool}
+								isLastPool={index === bestPools.length - 1}
+							/>
+						);
+					})}
+				</Pools>
+			)}
+
+			<Divider />
+			<StickyButtonWrapper>
+				<Button fullWidth isBig pending={swapPending} onClick={() => swap()}>
+					Confirm Swap
+				</Button>
+			</StickyButtonWrapper>
+		</ModalWrapper>
+	);
+};
+
+export default SwapConfirmModal;

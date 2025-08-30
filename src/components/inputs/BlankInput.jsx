@@ -1,0 +1,99 @@
+import * as React from "react";
+import { forwardRef, useEffect, useRef, useState } from "react";
+import styled from "styled-components";
+
+import Input from "./Input";
+
+import { COLORS } from "web/styles";
+
+const BlankInputComponent = styled(Input)`
+	input {
+		background: none;
+		border: none;
+		padding: 0;
+		border-radius: 0;
+		width: 100%;
+		outline: none;
+		font-size: ${({ $fontSize }) => `${$fontSize}px`};
+		transition: font-size 0.1s ease;
+
+		&:focus {
+			border: none;
+		}
+
+		&:disabled {
+			color: ${COLORS.darkGrayText};
+		}
+	}
+`;
+
+const BlankInput = forwardRef((props, ref) => {
+	const { value = "", ...rest } = props;
+
+	const wrapperRef = useRef(null);
+	const textRef = useRef(null);
+	const [fontSize, setFontSize] = useState(34);
+	const rafId = useRef(null);
+
+	const updateFontSize = React.useCallback(() => {
+		if (!textRef.current || !wrapperRef.current) return;
+
+		const wrapperWidth = wrapperRef.current.offsetWidth;
+		let size = 36;
+
+		while (size > 12) {
+			textRef.current.style.fontSize = `${size}px`;
+			const textWidth = textRef.current.offsetWidth;
+
+			if (textWidth <= wrapperWidth) break;
+			size -= 1;
+		}
+
+		setFontSize(size);
+	}, []);
+
+	// Use rAF to throttle updates
+	const requestFontSizeUpdate = React.useCallback(() => {
+		if (rafId.current !== null) {
+			cancelAnimationFrame(rafId.current);
+		}
+		rafId.current = requestAnimationFrame(updateFontSize);
+	}, [updateFontSize]);
+
+	useEffect(() => {
+		requestFontSizeUpdate();
+	}, [value, requestFontSizeUpdate]);
+
+	useEffect(() => {
+		const resizeObserver = new ResizeObserver(() => {
+			requestFontSizeUpdate();
+		});
+
+		if (wrapperRef.current) {
+			resizeObserver.observe(wrapperRef.current);
+		}
+
+		return () => {
+			resizeObserver.disconnect();
+			if (rafId.current !== null) cancelAnimationFrame(rafId.current);
+		};
+	}, [requestFontSizeUpdate]);
+
+	return (
+		<div className="relative w-full" ref={wrapperRef}>
+			<div className="hidden" ref={textRef} fontSize={fontSize}>
+				{value || " "}
+			</div>
+			<BlankInputComponent
+				{...rest}
+				value={value}
+				ref={ref}
+				$fontSize={fontSize}
+			/>
+		</div>
+	);
+});
+
+BlankInput.displayName = "BlankInput";
+
+export default BlankInput;
