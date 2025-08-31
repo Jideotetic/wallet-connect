@@ -44,9 +44,9 @@ export default class ToastServiceClass {
 			},
 		];
 
-		if (window?.navigator?.vibrate) {
-			window?.navigator?.vibrate(200);
-		}
+		// if (window?.navigator?.vibrate) {
+		// 	window?.navigator?.vibrate(200);
+		// }
 		this.event.trigger({ type: ToastEvents.update, toasts: this.toasts });
 
 		promise.then(({ id }) => {

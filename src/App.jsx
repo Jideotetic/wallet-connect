@@ -3,7 +3,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 
 import { MainRoutes } from "constants/routes";
 import { getAquaAssetData, getAssetString } from "helpers/assets";
-import { StellarService } from "services/globalServices";
+import { ModalService, StellarService } from "services/globalServices";
 import { getAssetsList } from "api/amm";
 import useAssetsStore from "store/assetsStore/useAssetsStore";
 import { cacheTokens } from "helpers/swap";
@@ -13,6 +13,10 @@ import ModalContainer from "components/ModalContainer";
 import ToastContainer from "components/ToastContainer";
 import useAuthStore from "store/authStore/useAuthStore";
 import useGlobalSubscriptions from "hooks/useGlobalSubscriptions";
+import { LoginTypes } from "store/authStore/types";
+import { StellarEvents } from "services/stellar.service";
+import { D_ICE_CODE, ICE_ISSUER } from "constants/assets";
+import DIceTrustlineModal from "components/DIceTrustlineModal";
 
 const UPDATE_ASSETS_DATE = "update assets timestamp";
 const UPDATE_PERIOD = 24 * 60 * 60 * 1000;
@@ -76,31 +80,31 @@ const Swap = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	// const reloadIfNotLoaded = () => {
-	// 	if (!isAssetsUpdated) {
-	// 		window.location.reload();
-	// 	}
-	// };
+	const reloadIfNotLoaded = () => {
+		if (!isAssetsUpdated) {
+			window.location.reload();
+		}
+	};
 
-	// useEffect(() => {
-	// 	window.addEventListener("online", reloadIfNotLoaded);
+	useEffect(() => {
+		window.addEventListener("online", reloadIfNotLoaded);
 
-	// 	return () => window.removeEventListener("online", reloadIfNotLoaded);
-	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	// }, [isAssetsUpdated]);
+		return () => window.removeEventListener("online", reloadIfNotLoaded);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [isAssetsUpdated]);
 
-	// useEffect(() => {
-	// 	const handler = (event) => {
-	// 		if (account && account.authType === LoginTypes.secret) {
-	// 			event.preventDefault();
-	// 		}
-	// 	};
+	useEffect(() => {
+		const handler = (event) => {
+			if (account && account.authType === LoginTypes.secret) {
+				event.preventDefault();
+			}
+		};
 
-	// 	window.addEventListener("beforeunload", handler);
-	// 	return () => {
-	// 		window.removeEventListener("beforeunload", handler);
-	// 	};
-	// }, [account]);
+		window.addEventListener("beforeunload", handler);
+		return () => {
+			window.removeEventListener("beforeunload", handler);
+		};
+	}, [account]);
 
 	useEffect(() => {
 		if (assets.length) {
@@ -109,63 +113,63 @@ const Swap = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [assets]);
 
-	// useEffect(() => {
-	// 	if (isLogged) {
-	// 		StellarService.startEffectsStream(account.accountId());
-	// 	} else {
-	// 		StellarService.stopEffectsStream();
-	// 	}
-	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	// }, [isLogged]);
+	useEffect(() => {
+		if (isLogged) {
+			StellarService.startEffectsStream(account.accountId());
+		} else {
+			StellarService.stopEffectsStream();
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [isLogged]);
 
-	// useEffect(() => {
-	// 	if (!account) {
-	// 		return;
-	// 	}
-	// 	const unsub = StellarService.event.sub(({ type }) => {
-	// 		if (type === StellarEvents.claimableUpdate) {
-	// 			const delegators = StellarService.getDelegatorLocks(
-	// 				account.accountId()
-	// 			);
+	useEffect(() => {
+		if (!account) {
+			return;
+		}
+		const unsub = StellarService.event.sub(({ type }) => {
+			if (type === StellarEvents.claimableUpdate) {
+				const delegators = StellarService.getDelegatorLocks(
+					account.accountId()
+				);
 
-	// 			if (
-	// 				delegators.length &&
-	// 				account.getAssetBalance(
-	// 					StellarService.createAsset(D_ICE_CODE, ICE_ISSUER)
-	// 				) === null
-	// 			) {
-	// 				ModalService.openModal(DIceTrustlineModal, {});
-	// 			}
-	// 		}
-	// 	});
+				if (
+					delegators.length &&
+					account.getAssetBalance(
+						StellarService.createAsset(D_ICE_CODE, ICE_ISSUER)
+					) === null
+				) {
+					ModalService.openModal(DIceTrustlineModal, {});
+				}
+			}
+		});
 
-	// 	return () => unsub();
-	// }, [account]);
+		return () => unsub();
+	}, [account]);
 
-	// useEffect(() => {
-	// 	if (isLogged && Boolean(redirectURL)) {
-	// 		disableRedirect();
-	// 	}
-	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	// }, [isLogged, redirectURL]);
+	useEffect(() => {
+		if (isLogged && Boolean(redirectURL)) {
+			disableRedirect();
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [isLogged, redirectURL]);
 
-	// useEffect(() => {
-	// 	if (isLogged && Boolean(callback)) {
-	// 		callback();
-	// 		removeAuthCallback();
-	// 	}
-	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	// }, [isLogged, callback]);
+	useEffect(() => {
+		if (isLogged && Boolean(callback)) {
+			callback();
+			removeAuthCallback();
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [isLogged, callback]);
 
-	// useEffect(() => {
-	// 	const userAgent = window.navigator.userAgent;
+	useEffect(() => {
+		const userAgent = window.navigator.userAgent;
 
-	// 	// Fix iOS functionality: tap on both sides of the dynamic island, and the phone will instantly scroll up
-	// 	if (userAgent.match(/iPad/i) || userAgent.match(/iPhone/i)) {
-	// 		document.documentElement.style.overflowX = "unset";
-	// 		document.body.style.overflowX = "unset";
-	// 	}
-	// }, []);
+		// Fix iOS functionality: tap on both sides of the dynamic island, and the phone will instantly scroll up
+		if (userAgent.match(/iPad/i) || userAgent.match(/iPhone/i)) {
+			document.documentElement.style.overflowX = "unset";
+			document.body.style.overflowX = "unset";
+		}
+	}, []);
 
 	const { aquaAssetString } = getAquaAssetData();
 
