@@ -4,7 +4,7 @@ import styled from "styled-components";
 
 import { COLORS } from "web/styles";
 
-import CopyIcon from "assets/icon-copy.svg";
+import { IoCopyOutline } from "react-icons/io5";
 
 import Tooltip from "../Tooltip";
 import { TOOLTIP_POSITION } from "constants/tool-tip";
@@ -18,10 +18,6 @@ const CopyButtonContainer = styled.div`
 	color: ${({ isBlackText }) =>
 		isBlackText ? COLORS.paragraphText : COLORS.purple};
 	cursor: pointer;
-`;
-
-const CopyIconStyled = styled(CopyIcon)`
-	margin-left: 0.8rem;
 `;
 
 const Inner = styled.div`
@@ -67,7 +63,7 @@ const CopyButton = ({ text, children, withoutLogo, isBlackText, ...props }) => {
 				isBlackText={isBlackText}
 			>
 				{children}
-				{!withoutLogo && <CopyIconStyled />}
+				{!withoutLogo && <IoCopyOutline />}
 			</CopyButtonContainer>
 		</Tooltip>
 	);

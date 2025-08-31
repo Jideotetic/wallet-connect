@@ -4,9 +4,9 @@ import styled from "styled-components";
 import { flexAllCenter } from "web/mixins";
 import { COLORS } from "web/styles";
 
-import Fail from "assets/icon-fail.svg";
-import Pending from "assets/icon-pending.svg";
-import Success from "assets/icon-success.svg";
+import { MdSmsFailed } from "react-icons/md";
+import { MdOutlinePending } from "react-icons/md";
+import { FaCheck } from "react-icons/fa";
 
 const IconBlock = styled.div`
 	height: ${({ $isBig }) => ($isBig ? "5.6rem" : "4rem")};
@@ -26,19 +26,19 @@ const IconBlock = styled.div`
 
 export const IconSuccess = ({ isBig }) => (
 	<IconBlock $isBig={isBig}>
-		<Success />
+		<FaCheck />
 	</IconBlock>
 );
 
 export const IconFail = ({ isBig }) => (
 	<IconBlock $isBig={isBig}>
-		<Fail />
+		<MdSmsFailed />
 	</IconBlock>
 );
 
 export const IconPending = ({ isBig }) => (
 	<IconBlock $isBig={isBig}>
-		<Pending />
+		<MdOutlinePending />
 	</IconBlock>
 );
 
