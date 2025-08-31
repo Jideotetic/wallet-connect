@@ -25,10 +25,9 @@ import { customScroll, respondDown, textEllipsis } from "web/mixins";
 import { Breakpoints, COLORS } from "web/styles";
 
 import Asset from "./Asset";
-import { Input } from "basics/inputs";
+import Input from "./inputs/Input";
 import CircleLoader from "./loaders/CircleLoader";
 import PageLoader from "./loaders/PageLoader";
-import { ModalTitle, ModalWrapper } from "./ModalAtoms";
 
 const StyledInput = styled(Input)`
 	margin-top: 2.4rem;
@@ -157,8 +156,7 @@ const DEFAULT_ASSETS = [
 	StellarService.createAsset(USDx_CODE, USDx_ISSUER),
 ];
 
-const AssetPickerModal = ({ confirm, params }) => {
-	console.log("AssetPickerModal props:", { confirm, params });
+const AssetPickerModal = ({ params, confirm }) => {
 	const [search, setSearch] = useState("");
 
 	const [balances, setBalances] = useState([]);
@@ -179,30 +177,23 @@ const AssetPickerModal = ({ confirm, params }) => {
 	}, [account]);
 
 	// get balances with tokens pooled into AMM
-	const filteredBalances = useMemo(
-		() =>
-			balances.filter(({ token }) =>
-				assetsList?.find(
-					(knownAssets) => knownAssets.contract === token.contract
-				)
-			) ?? [],
-		[balances, assetsList]
-	);
+	const filteredBalances =
+		balances.filter(({ token }) =>
+			assetsList?.find((knownAssets) => knownAssets.contract === token.contract)
+		) ?? [];
 
-	const assets = useMemo(
-		() => [
-			...filteredBalances,
-			...(assetsList
-				?.filter(
-					(knownAsset) =>
-						!filteredBalances.find(
-							(asset) => asset.token.contract === knownAsset.contract
-						)
-				)
-				.map((token) => ({ token })) || []),
-		],
-		[filteredBalances, assetsList]
-	);
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	const assets = [
+		...filteredBalances,
+		...(assetsList
+			?.filter(
+				(knownAsset) =>
+					!filteredBalances.find(
+						(asset) => asset.token.contract === knownAsset.contract
+					)
+			)
+			.map((token) => ({ token })) || []),
+	];
 
 	const { searchResults, searchPending } = useAssetsSearch(search);
 
@@ -252,24 +243,33 @@ const AssetPickerModal = ({ confirm, params }) => {
 	};
 
 	return (
-		<ModalWrapper $minHeight="30rem">
-			<ModalTitle>Choose asset</ModalTitle>
-			<StyledInput
+		<div className="max-h-[calc(100vh-300px)]">
+			<h1 className="mb-4">Choose asset</h1>
+
+			<input
+				className="w-full border border-gray-200 p-4 rounded-lg"
+				type="text"
+				placeholder="Search asset or enter home domain"
+				value={search}
+				onChange={(e) => setSearch(e.target.value)}
+			/>
+			{/* <StyledInput
 				placeholder="Search asset or enter home domain"
 				value={search}
 				onChange={(e) => setSearch(e.target.value)}
 				postfix={searchPending ? <CircleLoader size="small" /> : null}
-			/>
-			<DefaultAssets>
+			/> */}
+			<div className="flex mt-4 justify-evenly flex-wrap">
 				{DEFAULT_ASSETS.map((asset) => (
-					<DefaultAsset
+					<div
+						className=" flex bg-white items-center border rounded-4xl gap-2 cursor-pointer p-1"
 						key={getAssetString(asset)}
 						onClick={() => chooseAsset(asset)}
 					>
 						<Asset asset={asset} logoAndCode />
-					</DefaultAsset>
+					</div>
 				))}
-			</DefaultAssets>
+			</div>
 			{account && !balances.length ? (
 				<LoaderWrapper>
 					<PageLoader />
@@ -304,7 +304,7 @@ const AssetPickerModal = ({ confirm, params }) => {
 					)}
 				</AssetsList>
 			)}
-		</ModalWrapper>
+		</div>
 	);
 };
 

@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { ModalBody } from "web/components/ModalBody";
+import { ModalBody } from "components/ModalBody";
 
 import EventService from "./event.service";
 
@@ -13,7 +13,7 @@ export default class ModalServiceClass {
 	id = 0;
 	event = new EventService();
 
-	async openModal(
+	openModal(
 		modalTemplate,
 		params = {},
 		hideClose = false,
@@ -73,14 +73,16 @@ export default class ModalServiceClass {
 
 		this.event.trigger({ type: ModalEvents.update, modals: this.modals });
 
-		const { result, id: modalId } = await promise;
-		const newModals = this.modals.filter(({ id: id_1 }) => id_1 !== modalId);
-		this.modals = newModals.map((modal_1, index) => {
-			modal_1.state.isActive = index === newModals.length - 1;
-			return modal_1;
+		return promise.then(({ result, id: modalId }) => {
+			const newModals = this.modals.filter(({ id }) => id !== modalId);
+
+			this.modals = newModals.map((modal, index) => {
+				modal.state.isActive = index === newModals.length - 1;
+				return modal;
+			});
+			this.event.trigger({ type: ModalEvents.update, modals: this.modals });
+			return result;
 		});
-		this.event.trigger({ type: ModalEvents.update, modals: this.modals });
-		return result;
 	}
 
 	closeAllModals() {

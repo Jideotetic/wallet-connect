@@ -17,13 +17,14 @@ import {
 	WalletKitService,
 } from "services/globalServices";
 
-import BG from "assets/get-extension-bg.svg";
-import ArrowRightIcon from "assets/icon-arrow-right.svg";
-import KeyIcon from "assets/icon-key.svg";
-import Ledger from "assets/ledger-logo.svg";
-import LobstrLogo from "assets/lobstr-logo-black.svg";
-import WalletConnectLogo from "assets/wallet-connect-logo.svg";
-import Stellar from "assets/xlm-logo.svg";
+import { IoExtensionPuzzleOutline } from "react-icons/io5";
+
+import { IoIosArrowForward } from "react-icons/io";
+import { FaKey } from "react-icons/fa";
+import { SiKnowledgebase } from "react-icons/si";
+import { CiGlobe } from "react-icons/ci";
+import { SiWalletconnect } from "react-icons/si";
+import { TbAlignBoxLeftTop } from "react-icons/tb";
 
 import Label from "./Label";
 import { ModalTitle, ModalWrapper } from "./ModalAtoms";
@@ -35,13 +36,6 @@ import { respondDown } from "../web/mixins";
 import { Breakpoints, COLORS } from "../web/styles";
 import GetLobstrExtensionModal from "./GetLobstrExtensionModal";
 import LedgerLogin from "./LedgerLogin";
-
-const BgStyled = styled(BG)`
-	${respondDown(Breakpoints.md)`
-        width: 100vw;
-        height: 30vh;
-    `}
-`;
 
 export const LoginMethod = styled.div`
 	display: flex;
@@ -92,16 +86,6 @@ export const LoginMethodDescription = styled.div`
 	line-height: 2rem;
 	color: ${COLORS.grayText};
 	margin-left: 2.4rem;
-`;
-
-const ArrowRight = styled(ArrowRightIcon)`
-	margin-left: auto;
-	min-width: 1.6rem;
-`;
-
-const StellarLogo = styled(Stellar)`
-	width: 3.7rem;
-	min-width: 3.7rem;
 `;
 
 const ChooseLoginMethodModal = ({ close, params }) => {
@@ -190,7 +174,7 @@ const ChooseLoginMethodModal = ({ close, params }) => {
 							GetLobstrExtensionModal,
 							{},
 							false,
-							<BgStyled />
+							<IoExtensionPuzzleOutline />
 						);
 					}
 				});
@@ -198,66 +182,94 @@ const ChooseLoginMethodModal = ({ close, params }) => {
 		}
 	};
 
+	console.log("Login...");
+
 	return (
-		<ModalWrapper>
-			<ModalTitle>Sign in</ModalTitle>
+		<div className="max-h-[calc(100vh-300px)]">
+			<h1 className="mb-4">Sign in</h1>
+
+			<div
+				className="flex items-center justify-between gap-4 p-4 bg-gray-100 rounded-2xl mb-4"
+				onClick={() => chooseMethod(LoginTypes.walletKit)}
+			>
+				<div className="flex items-center gap-4">
+					<TbAlignBoxLeftTop className="text-2xl" />
+
+					<div>
+						<p>Stellar Wallet Kit</p>
+						<span className="text-xs">
+							Freighter, HOT Wallet, xBull, Albedo, Hana Wallet, Rabet
+						</span>
+					</div>
+				</div>
+
+				<IoIosArrowForward />
+			</div>
 
 			{!isMobile() && (
-				<LoginMethod onClick={() => chooseMethod(LoginTypes.lobstr)}>
-					<LobstrLogo />
-					<LoginMethodName>LOBSTR wallet</LoginMethodName>
-					<ArrowRight />
-				</LoginMethod>
+				<div
+					className="flex items-center justify-between p-4 bg-gray-100 rounded-2xl mb-4"
+					onClick={() => chooseMethod(LoginTypes.lobstr)}
+				>
+					<div className="flex items-center gap-4">
+						<CiGlobe className="text-2xl" />
+						<p>LOBSTR wallet</p>
+					</div>
+					<IoIosArrowForward />
+				</div>
 			)}
 
-			<LoginMethod onClick={() => chooseMethod(LoginTypes.walletKit)}>
-				<StellarLogo />
+			<div
+				className="flex items-center justify-between gap-4 p-4 bg-gray-100 rounded-2xl mb-4"
+				onClick={() => chooseMethod(LoginTypes.walletConnect)}
+			>
+				<div className="flex items-center gap-4">
+					<SiWalletconnect className="text-2xl" />
+					<p>WalletConnect</p>
+				</div>
+				<IoIosArrowForward />
+			</div>
 
-				<LoginMethodWithDescription>
-					<LoginMethodName>
-						Stellar Wallet Kit <Label labelText="NEW!" />
-					</LoginMethodName>
-					<LoginMethodDescription>
-						Freighter, HOT Wallet, xBull, Albedo, Hana Wallet, Rabet
-					</LoginMethodDescription>
-				</LoginMethodWithDescription>
-				<ArrowRight />
-			</LoginMethod>
+			<div
+				className="flex items-center justify-between gap-4 p-4 bg-gray-100 rounded-2xl mb-4"
+				onClick={() => chooseMethod(LoginTypes.ledger)}
+			>
+				<div className="flex items-center gap-4">
+					<SiKnowledgebase className="text-2xl" />
+					<p>Ledger</p>
+				</div>
 
-			<LoginMethod onClick={() => chooseMethod(LoginTypes.walletConnect)}>
-				<WalletConnectLogo />
+				<IoIosArrowForward />
+			</div>
 
-				<LoginMethodName>WalletConnect</LoginMethodName>
-				<ArrowRight />
-			</LoginMethod>
+			<div
+				className="flex items-center justify-between gap-4 p-4 bg-gray-100 rounded-2xl mb-4"
+				onClick={() => chooseMethod(LoginTypes.public)}
+			>
+				<div className="flex items-center gap-4">
+					<TbAlignBoxLeftTop className="text-2xl" />
 
-			<LoginMethod onClick={() => chooseMethod(LoginTypes.ledger)}>
-				<Ledger />
-				<LoginMethodWithDescription>
-					<LoginMethodName>Ledger</LoginMethodName>
-				</LoginMethodWithDescription>
+					<div>
+						<p>Stellar Laboratory</p>
+						<span className="text-xs">Sign with Stellar Laboratory.</span>
+					</div>
+				</div>
 
-				<ArrowRight />
-			</LoginMethod>
+				<IoIosArrowForward />
+			</div>
 
-			<LoginMethod onClick={() => chooseMethod(LoginTypes.public)}>
-				<StellarLogo />
-				<LoginMethodWithDescription>
-					<LoginMethodName>Stellar Laboratory</LoginMethodName>
-					<LoginMethodDescription>
-						Sign with Stellar Laboratory.
-					</LoginMethodDescription>
-				</LoginMethodWithDescription>
+			<div
+				className="flex items-center justify-between gap-4 p-4 bg-gray-100 rounded-2xl"
+				onClick={() => chooseMethod(LoginTypes.secret)}
+			>
+				<div className="flex items-center gap-4">
+					<FaKey className="text-2xl" />
+					<p>Secret key</p>
+				</div>
 
-				<ArrowRight />
-			</LoginMethod>
-
-			<LoginMethod onClick={() => chooseMethod(LoginTypes.secret)}>
-				<KeyIcon />
-				<LoginMethodName>Secret key</LoginMethodName>
-				<ArrowRight />
-			</LoginMethod>
-		</ModalWrapper>
+				<IoIosArrowForward />
+			</div>
+		</div>
 	);
 };
 

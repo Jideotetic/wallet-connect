@@ -11,13 +11,13 @@ import useAssetsStore from "store/assetsStore/useAssetsStore";
 
 import { ModalService, StellarService } from "services/globalServices";
 
-import {  TokenType } from "types/token";
+import { TokenType } from "types/token";
 
 import { flexAllCenter, respondDown, textEllipsis } from "web/mixins";
 import AssetInfoModal from "components/AssetInfoModal";
 import { Breakpoints, COLORS } from "web/styles";
 
-import Info from "assets/icon-info.svg";
+import { FaInfo } from "react-icons/fa";
 
 import AssetLogo from "./AssetLogo";
 import DotsLoader from "./loaders/DotsLoader";
@@ -179,7 +179,7 @@ const Asset = ({
 
 	return (
 		<Container {...props}>
-			<AssetLogo asset={asset} isSmall={inRow} isBig={isBig} />
+			<AssetLogo asset={asset} />
 			<AssetDetails $inRow={inRow}>
 				<AssetCode $inRow={inRow} $isBig={isBig}>
 					{asset.code}
@@ -207,7 +207,7 @@ const Asset = ({
 					showOnHover
 				>
 					<InfoIcon $withMobileView={withMobileView}>
-						<Info />
+						<FaInfo />
 					</InfoIcon>
 				</Tooltip>
 			</AssetDetails>

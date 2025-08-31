@@ -5,11 +5,11 @@ import styled from "styled-components";
 import useAnimationEnd from "hooks/useAnimationEnd";
 import useOnClickOutside from "hooks/useOutsideClick";
 
-import CloseIcon from "assets/icon-close.svg";
-import ArrowRight from "assets/icon-link-arrow.svg";
+import { IoMdClose } from "react-icons/io";
+import { FaArrowLeft } from "react-icons/fa";
 
-import { flexAllCenter, respondDown } from "../mixins";
-import { Breakpoints, COLORS, Z_INDEX } from "../styles";
+import { flexAllCenter, respondDown } from "web/mixins";
+import { Breakpoints, COLORS, Z_INDEX } from "web/styles";
 
 const ModalWrapper = styled.div`
 	position: fixed;
@@ -99,10 +99,6 @@ const CloseButton = styled.div`
     `};
 `;
 
-const ArrowLeft = styled(ArrowRight)`
-	transform: rotate(180deg);
-`;
-
 const BackButton = styled(CloseButton)`
 	right: 7rem;
 `;
@@ -173,6 +169,7 @@ export const ModalBody = ({
 			setIsShow(false);
 			setResolvedData(res);
 		});
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	return (
@@ -193,7 +190,7 @@ export const ModalBody = ({
 						}}
 						$withBackground={Boolean(backgroundImage)}
 					>
-						<ArrowLeft />
+						<FaArrowLeft />
 					</BackButton>
 				)}
 				{!hideClose && (
@@ -201,7 +198,7 @@ export const ModalBody = ({
 						onClick={() => close()}
 						$withBackground={Boolean(backgroundImage)}
 					>
-						<CloseIcon />
+						<IoMdClose />
 					</CloseButton>
 				)}
 				<ModalContent>

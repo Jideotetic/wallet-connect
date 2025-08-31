@@ -258,17 +258,17 @@ const SwapForm = ({
 		}
 	};
 
-	// const revertAssets = () => {
-	// 	const temp = base;
-	// 	setBase(counter);
-	// 	setCounter(temp);
-	// 	setBaseAmount(counterAmount ?? "");
-	// 	setCounterAmount("");
-	// 	setBestPathXDR(null);
-	// 	setBestPath(null);
-	// 	setBestPools(null);
-	// 	setIsPriceReverted(false);
-	// };
+	const revertAssets = () => {
+		const temp = base;
+		setBase(counter);
+		setCounter(temp);
+		setBaseAmount(counterAmount ?? "");
+		setCounterAmount("");
+		setBestPathXDR(null);
+		setBestPath(null);
+		setBestPools(null);
+		setIsPriceReverted(false);
+	};
 
 	const SLIPPAGE = localStorage.getItem(SWAP_SLIPPAGE_ALIAS) || "1"; // 1%
 
@@ -321,7 +321,7 @@ const SwapForm = ({
 					isEmbedded={isEmbedded}
 				/>
 
-				{/* <SwapFormDivider pending={estimatePending} onRevert={revertAssets} /> */}
+				<SwapFormDivider pending={estimatePending} onRevert={revertAssets} />
 
 				<SwapFormRow
 					asset={counter}
