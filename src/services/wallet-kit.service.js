@@ -85,6 +85,8 @@ export default class WalletKitServiceClass {
 
 			const { address } = await this.walletKit.getAddress();
 
+			console.log(id === FREIGHTER_ID);
+
 			if (id === FREIGHTER_ID) {
 				this.startFreighterWatching(address);
 			}

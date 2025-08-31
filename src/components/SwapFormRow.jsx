@@ -13,7 +13,7 @@ import { TokenType } from "types/token";
 import { respondDown, textEllipsis } from "web/mixins";
 import { Breakpoints, COLORS } from "web/styles";
 
-import Info from "assets/icon-info.svg";
+import { FaInfo } from "react-icons/fa";
 
 import AssetPicker from "./AssetPicker";
 import BlankInput from "./inputs/BlankInput";
@@ -196,7 +196,7 @@ const SwapFormRow = ({
 									</TooltipInner>
 								}
 							>
-								<Info />
+								<FaInfo />
 							</Tooltip>
 						)}
 					</Balance>

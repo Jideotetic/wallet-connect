@@ -12,6 +12,7 @@ import PageLoader from "components/loaders/PageLoader";
 import ModalContainer from "components/ModalContainer";
 import ToastContainer from "components/ToastContainer";
 import useAuthStore from "store/authStore/useAuthStore";
+import useGlobalSubscriptions from "hooks/useGlobalSubscriptions";
 
 const UPDATE_ASSETS_DATE = "update assets timestamp";
 const UPDATE_PERIOD = 24 * 60 * 60 * 1000;
@@ -20,7 +21,7 @@ const UPDATE_PERIOD = 24 * 60 * 60 * 1000;
 const SwapPageLazy = lazy(() => import("pages/SwapPage"));
 
 const Swap = () => {
-	// useGlobalSubscriptions();
+	useGlobalSubscriptions();
 
 	const { getAssets, assets, processNewAssets, assetsInfo, clearAssets } =
 		useAssetsStore();
