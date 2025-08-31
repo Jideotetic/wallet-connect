@@ -26,9 +26,6 @@ import { CiGlobe } from "react-icons/ci";
 import { SiWalletconnect } from "react-icons/si";
 import { TbAlignBoxLeftTop } from "react-icons/tb";
 
-import Label from "./Label";
-import { ModalTitle, ModalWrapper } from "./ModalAtoms";
-
 import LoginWithPublic from "./LoginWithPublic";
 import LoginWithSecret from "./LoginWithSecret";
 
@@ -103,7 +100,8 @@ const ChooseLoginMethodModal = ({ close, params }) => {
 		} else {
 			disableRedirect();
 		}
-	}, [disableRedirect, enableRedirect, params.redirectURL]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	useEffect(() => {
 		if (params.callback) {
@@ -111,7 +109,8 @@ const ChooseLoginMethodModal = ({ close, params }) => {
 		} else {
 			removeAuthCallback();
 		}
-	}, [addAuthCallback, params.callback, removeAuthCallback]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	const chooseMethod = (method) => {
 		if (pending) {
@@ -182,14 +181,12 @@ const ChooseLoginMethodModal = ({ close, params }) => {
 		}
 	};
 
-	console.log("Login...");
-
 	return (
 		<div className="max-h-[calc(100vh-300px)]">
 			<h1 className="mb-4">Sign in</h1>
 
 			<div
-				className="flex items-center justify-between gap-4 p-4 bg-gray-100 rounded-2xl mb-4"
+				className="flex items-center justify-between gap-4 p-4 bg-gray-100 rounded-2xl mb-4 cursor-pointer"
 				onClick={() => chooseMethod(LoginTypes.walletKit)}
 			>
 				<div className="flex items-center gap-4">
@@ -208,7 +205,7 @@ const ChooseLoginMethodModal = ({ close, params }) => {
 
 			{!isMobile() && (
 				<div
-					className="flex items-center justify-between p-4 bg-gray-100 rounded-2xl mb-4"
+					className="flex items-center justify-between p-4 bg-gray-100 rounded-2xl mb-4 cursor-pointer"
 					onClick={() => chooseMethod(LoginTypes.lobstr)}
 				>
 					<div className="flex items-center gap-4">
@@ -220,7 +217,7 @@ const ChooseLoginMethodModal = ({ close, params }) => {
 			)}
 
 			<div
-				className="flex items-center justify-between gap-4 p-4 bg-gray-100 rounded-2xl mb-4"
+				className="flex items-center justify-between gap-4 p-4 bg-gray-100 rounded-2xl mb-4 cursor-pointer"
 				onClick={() => chooseMethod(LoginTypes.walletConnect)}
 			>
 				<div className="flex items-center gap-4">
@@ -231,7 +228,7 @@ const ChooseLoginMethodModal = ({ close, params }) => {
 			</div>
 
 			<div
-				className="flex items-center justify-between gap-4 p-4 bg-gray-100 rounded-2xl mb-4"
+				className="flex items-center justify-between gap-4 p-4 bg-gray-100 rounded-2xl mb-4 cursor-pointer"
 				onClick={() => chooseMethod(LoginTypes.ledger)}
 			>
 				<div className="flex items-center gap-4">
@@ -243,7 +240,7 @@ const ChooseLoginMethodModal = ({ close, params }) => {
 			</div>
 
 			<div
-				className="flex items-center justify-between gap-4 p-4 bg-gray-100 rounded-2xl mb-4"
+				className="flex items-center justify-between gap-4 p-4 bg-gray-100 rounded-2xl mb-4 cursor-pointer"
 				onClick={() => chooseMethod(LoginTypes.public)}
 			>
 				<div className="flex items-center gap-4">
@@ -259,7 +256,7 @@ const ChooseLoginMethodModal = ({ close, params }) => {
 			</div>
 
 			<div
-				className="flex items-center justify-between gap-4 p-4 bg-gray-100 rounded-2xl"
+				className="flex items-center justify-between gap-4 p-4 bg-gray-100 rounded-2xl cursor-pointer"
 				onClick={() => chooseMethod(LoginTypes.secret)}
 			>
 				<div className="flex items-center gap-4">
