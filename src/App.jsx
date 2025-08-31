@@ -3,20 +3,15 @@ import { Navigate, Route, Routes } from "react-router-dom";
 
 import { MainRoutes } from "constants/routes";
 import { getAquaAssetData, getAssetString } from "helpers/assets";
-import { ModalService, StellarService } from "services/globalServices";
+import { StellarService } from "services/globalServices";
 import { getAssetsList } from "api/amm";
 import useAssetsStore from "store/assetsStore/useAssetsStore";
 import { cacheTokens } from "helpers/swap";
-// import useAuthStore from "store/authStore/useAuthStore";
 import { getEnv, setProductionEnv } from "helpers/env";
-// import { LoginTypes } from "store/authStore/types";
-// import { StellarEvents } from "services/stellar.service";
-// import { D_ICE_CODE, ICE_ISSUER } from "constants/assets";
-// import useGlobalSubscriptions from "hooks/useGlobalSubscriptions";
 import PageLoader from "components/loaders/PageLoader";
 import ModalContainer from "components/ModalContainer";
 import ToastContainer from "components/ToastContainer";
-// import DIceTrustlineModal from "components/DIceTrustlineModal";
+import useAuthStore from "store/authStore/useAuthStore";
 
 const UPDATE_ASSETS_DATE = "update assets timestamp";
 const UPDATE_PERIOD = 24 * 60 * 60 * 1000;
@@ -31,14 +26,23 @@ const Swap = () => {
 		useAssetsStore();
 	const [isAssetsUpdated, setIsAssetsUpdated] = useState(false);
 
-	// const {
-	// 	isLogged,
-	// 	account,
-	// 	redirectURL,
-	// 	disableRedirect,
-	// 	callback,
-	// 	removeAuthCallback,
-	// } = useAuthStore();
+	const {
+		isLogged,
+		account,
+		redirectURL,
+		disableRedirect,
+		callback,
+		removeAuthCallback,
+	} = useAuthStore();
+
+	console.log({
+		isLogged,
+		account,
+		redirectURL,
+		disableRedirect,
+		callback,
+		removeAuthCallback,
+	});
 
 	useEffect(() => {
 		if (!getEnv()) {
