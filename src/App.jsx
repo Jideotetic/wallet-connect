@@ -15,6 +15,7 @@ import { getEnv, setProductionEnv } from "helpers/env";
 // import useGlobalSubscriptions from "hooks/useGlobalSubscriptions";
 import PageLoader from "components/loaders/PageLoader";
 import ModalContainer from "components/ModalContainer";
+import ToastContainer from "components/ToastContainer";
 // import DIceTrustlineModal from "components/DIceTrustlineModal";
 
 const UPDATE_ASSETS_DATE = "update assets timestamp";
@@ -188,7 +189,7 @@ const Swap = () => {
 			</Routes>
 
 			<ModalContainer />
-			{/* <ToastContainer /> */}
+			<ToastContainer />
 		</>
 	);
 };

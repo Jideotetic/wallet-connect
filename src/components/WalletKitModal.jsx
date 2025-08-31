@@ -1,10 +1,9 @@
 import { HOTWALLET_ID } from "@creit.tech/stellar-wallets-kit";
 import { useEffect, useState } from "react";
-import styled from "styled-components";
 
 import { WalletKitService } from "services/globalServices";
 
-import ArrowRightIcon from "assets/icon-arrow-right.svg";
+import { IoIosArrowForward } from "react-icons/io";
 
 import ExternalLink from "./ExternalLink";
 import Label from "./Label";
@@ -16,11 +15,6 @@ import {
 	LoginMethodName,
 	LoginMethodWithDescription,
 } from "./ChooseLoginMethodModal";
-
-const ArrowRight = styled(ArrowRightIcon)`
-	margin-left: auto;
-	min-width: 1.6rem;
-`;
 
 const WalletKitModal = ({ params, close }) => {
 	const [isAvailableMap, setIsAvailableMap] = useState(null);
@@ -70,7 +64,7 @@ const WalletKitModal = ({ params, close }) => {
 							)}
 						</LoginMethodWithDescription>
 
-						<ArrowRight />
+						<IoIosArrowForward />
 					</LoginMethod>
 				)
 			)}

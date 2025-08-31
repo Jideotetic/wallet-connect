@@ -4,7 +4,7 @@ import styled, { css } from "styled-components";
 
 import { COLORS } from "web/styles";
 
-import LinkArrowIcon from "assets/icon-link-arrow.svg";
+import { FaLongArrowAltRight } from "react-icons/fa";
 
 const styles = css`
 	display: flex;
@@ -34,16 +34,12 @@ const LinkBodyDiv = styled.div`
 	}
 `;
 
-const LinkArrow = styled(LinkArrowIcon)`
-	margin-left: 1rem;
-`;
-
 const ExternalLink = ({ children, asDiv, to, ...props }) => {
 	if (asDiv) {
 		return (
 			<LinkBodyDiv {...props}>
 				{children}
-				<LinkArrow />
+				<FaLongArrowAltRight />
 			</LinkBodyDiv>
 		);
 	}
@@ -52,14 +48,14 @@ const ExternalLink = ({ children, asDiv, to, ...props }) => {
 		return (
 			<LinkStyled to={to} {...props}>
 				{children}
-				<LinkArrow />
+				<FaLongArrowAltRight />
 			</LinkStyled>
 		);
 	}
 	return (
 		<LinkBody {...props} target="_blank" rel="noreferrer noopener">
 			{children}
-			<LinkArrow />
+			<FaLongArrowAltRight />
 		</LinkBody>
 	);
 };
