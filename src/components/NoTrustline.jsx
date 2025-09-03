@@ -20,7 +20,8 @@ import { TokenType } from "types/token";
 import { respondDown } from "web/mixins";
 import { Breakpoints, COLORS } from "web/styles";
 
-import Plus from "assets/icon-plus.svg";
+
+import { FaPlus } from "react-icons/fa";
 
 import Asset from "./Asset";
 import Button from "./buttons/Button";
@@ -132,7 +133,7 @@ const NoTrustline = ({
 				pending={trustlinePending}
 				isRounded={isRounded}
 			>
-				add {asset.code} trustline <Plus />
+				add {asset.code} trustline <FaPlus />
 			</TrustlineButton>
 		</TrustlineBlock>
 	);
