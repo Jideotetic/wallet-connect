@@ -19,6 +19,7 @@
 		"@tailwindcss/vite": "^4.1.12",
 		"@walletconnect/sign-client": "^2.21.8",
 		"axios": "^1.11.0",
+		"clsx": "^2.1.1",
 		"install": "^0.13.0",
 		"is-ua-webview": "^1.1.2",
 		"lottie-react": "^2.4.1",

@@ -1,5 +1,4 @@
 import * as React from "react";
-import styled from "styled-components";
 
 import { formatBalance } from "helpers/format-number";
 
@@ -8,22 +7,6 @@ import { TokenType } from "types/token";
 import { IoIosSwap } from "react-icons/io";
 
 import DotsLoader from "./loaders/DotsLoader";
-
-import { COLORS } from "../web/styles";
-
-const Container = styled.div`
-	color: ${COLORS.grayText};
-	margin: 1.6rem 0;
-	display: flex;
-	align-items: center;
-	justify-content: flex-end;
-	cursor: pointer;
-	height: 1.7rem;
-
-	svg {
-		margin-left: 0.6rem;
-	}
-`;
 
 const Price = ({
 	baseAmount,
@@ -42,15 +25,19 @@ const Price = ({
 
 	if (pending || !baseAmount || !counterAmount) {
 		return (
-			<Container>
+			<div className="text-[#6B6C83] my-4 mx-0 flex items-center justify-end cursor-pointer h-7">
 				1 {base.code} = <DotsLoader style={{ margin: "0 0.5rem" }} />{" "}
 				{counter.code}
-			</Container>
+			</div>
 		);
 	}
 
 	return (
-		<Container onClick={() => setIsReverted(!isReverted)} {...props}>
+		<div
+			className="text-[#6B6C83] my-4 mx-0 flex items-center justify-end cursor-pointer h-7"
+			onClick={() => setIsReverted(!isReverted)}
+			{...props}
+		>
 			{isReverted
 				? `1 ${counter.code} = ${formatBalance(
 						+(+baseAmount / +counterAmount).toFixed(
@@ -63,7 +50,7 @@ const Price = ({
 						)
 				  )} ${counter.code}`}
 			<IoIosSwap />
-		</Container>
+		</div>
 	);
 };
 

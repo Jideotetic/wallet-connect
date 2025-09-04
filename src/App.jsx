@@ -1,28 +1,34 @@
 import { lazy, useEffect, useState } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 
-import { MainRoutes } from "constants/routes";
-import { getAquaAssetData, getAssetString } from "helpers/assets";
-import { ModalService, StellarService } from "services/globalServices";
 import { getAssetsList } from "api/amm";
-import useAssetsStore from "store/assetsStore/useAssetsStore";
+
+import { D_ICE_CODE, ICE_ISSUER } from "constants/assets";
+import { MainRoutes } from "constants/routes";
+
+import { getAquaAssetData, getAssetString } from "helpers/assets";
 import { cacheTokens } from "helpers/swap";
 import { getEnv, setProductionEnv } from "helpers/env";
+
+import { ModalService, StellarService } from "services/globalServices";
+import { StellarEvents } from "services/stellar.service";
+
+import useAssetsStore from "store/assetsStore/useAssetsStore";
+import useAuthStore from "store/authStore/useAuthStore";
+import { LoginTypes } from "store/authStore/types";
+
 import PageLoader from "components/loaders/PageLoader";
 import ModalContainer from "components/ModalContainer";
 import ToastContainer from "components/ToastContainer";
-import useAuthStore from "store/authStore/useAuthStore";
-import useGlobalSubscriptions from "hooks/useGlobalSubscriptions";
-import { LoginTypes } from "store/authStore/types";
-import { StellarEvents } from "services/stellar.service";
-import { D_ICE_CODE, ICE_ISSUER } from "constants/assets";
 import DIceTrustlineModal from "components/DIceTrustlineModal";
 
-const UPDATE_ASSETS_DATE = "update assets timestamp";
-const UPDATE_PERIOD = 24 * 60 * 60 * 1000;
+import useGlobalSubscriptions from "hooks/useGlobalSubscriptions";
 
 // Lazy load SwapPage
 const SwapPageLazy = lazy(() => import("pages/SwapPage"));
+
+const UPDATE_ASSETS_DATE = "update assets timestamp";
+const UPDATE_PERIOD = 24 * 60 * 60 * 1000;
 
 const Swap = () => {
 	useGlobalSubscriptions();
@@ -39,15 +45,6 @@ const Swap = () => {
 		callback,
 		removeAuthCallback,
 	} = useAuthStore();
-
-	console.log({
-		isLogged,
-		account,
-		redirectURL,
-		disableRedirect,
-		callback,
-		removeAuthCallback,
-	});
 
 	useEffect(() => {
 		if (!getEnv()) {

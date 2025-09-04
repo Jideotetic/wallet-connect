@@ -1,44 +1,6 @@
 import * as React from "react";
-import styled from "styled-components";
 
 import useAuthStore from "store/authStore/useAuthStore";
-
-import { respondDown } from "web/mixins";
-import { Breakpoints, COLORS } from "web/styles";
-
-const Container = styled.div`
-	display: flex;
-`;
-
-const Buttons = styled.div`
-	display: flex;
-
-	${respondDown(Breakpoints.sm)`
-        width: 100%;
-    `}
-`;
-
-const PercentButton = styled.div`
-	padding: 0 0.4rem;
-	font-size: 1.4rem;
-	line-height: 1.6rem;
-	color: ${COLORS.grayText};
-	cursor: pointer;
-	flex: 1;
-
-	&:not(:last-child) {
-		margin-right: 1.2rem;
-	}
-
-	&:hover {
-		color: ${COLORS.titleText};
-	}
-
-	${respondDown(Breakpoints.sm)`
-        padding: unset;
-        text-align: center;
-    `}
-`;
 
 const PercentButtons = ({ setPercent }) => {
 	const { account } = useAuthStore();
@@ -47,14 +9,34 @@ const PercentButtons = ({ setPercent }) => {
 		return null;
 	}
 	return (
-		<Container>
-			<Buttons>
-				<PercentButton onClick={() => setPercent(25)}>25%</PercentButton>
-				<PercentButton onClick={() => setPercent(50)}>50%</PercentButton>
-				<PercentButton onClick={() => setPercent(75)}>75%</PercentButton>
-				<PercentButton onClick={() => setPercent(100)}>100%</PercentButton>
-			</Buttons>
-		</Container>
+		<div className="flex">
+			<div className="flex">
+				<div
+					className="py-0 px-2 cursor-pointer text-gray-400 hover:text-gray-600"
+					onClick={() => setPercent(25)}
+				>
+					25%
+				</div>
+				<div
+					className="py-0 px-2 cursor-pointer text-gray-400 hover:text-gray-600"
+					onClick={() => setPercent(50)}
+				>
+					50%
+				</div>
+				<div
+					className="py-0 px-2 cursor-pointer text-gray-400 hover:text-gray-600"
+					onClick={() => setPercent(75)}
+				>
+					75%
+				</div>
+				<div
+					className="py-0 px-2 cursor-pointer text-gray-400 hover:text-gray-600"
+					onClick={() => setPercent(100)}
+				>
+					100%
+				</div>
+			</div>
+		</div>
 	);
 };
 

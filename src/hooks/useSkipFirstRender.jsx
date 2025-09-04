@@ -8,7 +8,7 @@ export const useSkipFirstRender = (fn, args) => {
 			return fn();
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [args]);
+	}, args);
 
 	useEffect(() => {
 		isMounted.current = true;

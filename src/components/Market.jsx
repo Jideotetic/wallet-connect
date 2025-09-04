@@ -20,8 +20,7 @@ import { flexAllCenter, respondDown } from "web/mixins";
 import AssetInfoModal from "./AssetInfoModal";
 import { Breakpoints, COLORS } from "web/styles";
 
-import External from "assets/icon-external-link.svg";
-import Arrow from "assets/icon-link-arrow.svg";
+import { FaLongArrowAltRight } from "react-icons/fa";
 
 import ApyTier from "./ApyTier";
 import AssetLogo from "./AssetLogo";
@@ -172,7 +171,7 @@ const Labels = styled.div`
 	margin-top: 0.8rem;
 `;
 
-const ArrowRight = styled(Arrow)`
+const ArrowRight = styled(FaLongArrowAltRight)`
 	margin: 0 0.5rem;
 `;
 
@@ -327,7 +326,15 @@ const Market = ({
 					<span>
 						{assets.map((asset, index) => (
 							<React.Fragment key={getAssetString(asset)}>
-								{index > 0 ? isSwapResult ? <ArrowRight /> : " / " : ""}
+								{index > 0 ? (
+									isSwapResult ? (
+										<FaLongArrowAltRight />
+									) : (
+										" / "
+									)
+								) : (
+									""
+								)}
 								{amounts ? `${formatBalance(Number(amounts[index]))} ` : ""}
 								{asset.code}
 							</React.Fragment>
@@ -338,7 +345,7 @@ const Market = ({
 
 					{!withoutLink && (
 						<LinkCustom onClick={(e) => viewOnStellarX(e, assets)}>
-							<External />
+							<FaLongArrowAltRight />
 						</LinkCustom>
 					)}
 					{withMarketLink && (
@@ -350,7 +357,7 @@ const Market = ({
 								assets[0]
 							)}/${getAssetString(assets[1])}`}
 						>
-							<External />
+							<FaLongArrowAltRight />
 						</Link>
 					)}
 				</AssetsCodes>

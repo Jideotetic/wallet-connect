@@ -1,31 +1,5 @@
 import * as React from "react";
 import { forwardRef, useEffect, useRef, useState } from "react";
-import styled from "styled-components";
-
-import Input from "./Input";
-
-import { COLORS } from "web/styles";
-
-const BlankInputComponent = styled(Input)`
-	input {
-		background: none;
-		border: none;
-		padding: 0;
-		border-radius: 0;
-		width: 100%;
-		outline: none;
-		font-size: ${({ $fontSize }) => `${$fontSize}px`};
-		transition: font-size 0.1s ease;
-
-		&:focus {
-			border: none;
-		}
-
-		&:disabled {
-			color: ${COLORS.darkGrayText};
-		}
-	}
-`;
 
 const BlankInput = forwardRef((props, ref) => {
 	const { value = "", ...rest } = props;
@@ -84,11 +58,11 @@ const BlankInput = forwardRef((props, ref) => {
 			<div className="hidden" ref={textRef} fontSize={fontSize}>
 				{value || " "}
 			</div>
-			<BlankInputComponent
+			<input
+				className="bg-none border-none py-8 w-full outline-none text-2xl focus:border-none disabled:text-[#4B4E67]"
 				{...rest}
 				value={value}
 				ref={ref}
-				$fontSize={fontSize}
 			/>
 		</div>
 	);

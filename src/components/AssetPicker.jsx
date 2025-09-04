@@ -9,7 +9,7 @@ import AssetLogo from "./AssetLogo";
 
 const AssetPicker = ({ asset, onUpdate, assetsList }) => (
 	<div
-		className="flex bg-white items-center border rounded-4xl gap-2 cursor-pointer p-1"
+		className="flex w-fit ml-auto border border-gray-200 items-center rounded-4xl gap-2 cursor-pointer p-1"
 		onClick={() =>
 			ModalService.openModal(AssetPickerModal, { assetsList, onUpdate })
 		}

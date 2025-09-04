@@ -1,6 +1,5 @@
 import * as React from "react";
 import { useEffect, useMemo, useState } from "react";
-import styled from "styled-components";
 
 import { getNativePrices } from "api/amm";
 
@@ -8,58 +7,10 @@ import { formatBalance } from "helpers/format-number";
 
 import { StellarService } from "services/globalServices";
 
-import { respondDown, textEllipsis } from "web/mixins";
-import { Breakpoints, COLORS } from "web/styles";
-
 import { CiWarning } from "react-icons/ci";
 
 import Tooltip from "./Tooltip";
 import { TOOLTIP_POSITION } from "constants/tool-tip";
-
-const Container = styled.div`
-	display: flex;
-	align-items: center;
-	color: ${COLORS.grayText};
-	max-width: 17rem;
-	height: 1.7rem;
-
-	span {
-		font-size: 1.4rem;
-		${textEllipsis};
-	}
-`;
-
-const Percent = styled.div`
-	display: flex;
-	align-items: center;
-	margin-left: 0.4rem;
-
-	svg {
-		margin: 0 0.4rem;
-	}
-	color: ${({ $percent }) => {
-		if ($percent > 0) {
-			return COLORS.green;
-		}
-
-		if ($percent <= -10) {
-			return COLORS.pinkRed;
-		}
-
-		return COLORS.grayText;
-	}};
-`;
-
-const TooltipInner = styled.p`
-	width: 38rem;
-	white-space: pre-wrap;
-	font-size: 1.4rem;
-	line-height: 2rem;
-
-	${respondDown(Breakpoints.md)`
-        width: 20rem;
-    `}
-`;
 
 const AmountUsdEquivalent = ({ amount, asset, sourceAmount, sourceAsset }) => {
 	const [price, setPrice] = useState(null);
@@ -99,15 +50,15 @@ const AmountUsdEquivalent = ({ amount, asset, sourceAmount, sourceAsset }) => {
 
 	if (!amount || !price || (sourceAsset && !priceSource)) {
 		return (
-			<Container>
-				<span>$0</span>
-			</Container>
+			<div className="flex items-center text-[#6B6C83] max-w-2xs h-7">
+				<span className="text-2xl">$0</span>
+			</div>
 		);
 	}
 
 	return (
-		<Container>
-			<span>
+		<div className="flex items-center text-[#6B6C83] max-w-2xs h-7">
+			<span className="text-2xl">
 				$
 				{formatBalance(
 					+(
@@ -120,27 +71,35 @@ const AmountUsdEquivalent = ({ amount, asset, sourceAmount, sourceAsset }) => {
 			</span>
 
 			{percent && Number.isFinite(+percent) ? (
-				<Percent $percent={Number(percent)}>
+				<div
+					className={`flex items-center ml-1 ${
+						Number(percent) > 0
+							? "text-green-300"
+							: Number(percent) <= -10
+							? "text-red-400"
+							: "text-gray-400"
+					}`}
+				>
 					({Number(percent) > 0 ? "+" : ""}
 					{percent}%)
 					{Number(percent) <= -10 ? (
 						<Tooltip
 							showOnHover
 							content={
-								<TooltipInner>
+								<p className="text-sm">
 									Swapping these tokens in the submitted amount will create a
 									significant price impact misbalancing one or more pool ratios
 									and thus reducing your outcome.
-								</TooltipInner>
+								</p>
 							}
 							position={TOOLTIP_POSITION.bottom}
 						>
 							<CiWarning />
 						</Tooltip>
 					) : null}
-				</Percent>
+				</div>
 			) : null}
-		</Container>
+		</div>
 	);
 };
 

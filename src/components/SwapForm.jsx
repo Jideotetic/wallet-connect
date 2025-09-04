@@ -15,21 +15,14 @@ import { TokenType } from "types/token";
 
 import NoTrustline from "./NoTrustline";
 import Price from "./Price";
-import SwapSettingsModal, { SWAP_SLIPPAGE_ALIAS } from "./SwapSettingsModal";
+import { SWAP_SLIPPAGE_ALIAS } from "./SwapSettingsModal";
 import AmountUsdEquivalent from "./AmountUsdEquivalent";
 import SwapFormDivider from "./SwapFormDivider";
 import SwapFormRow from "./SwapFormRow";
 import SwapConfirmModal from "./SwapConfirmModal";
 import ChooseLoginMethodModal from "./ChooseLoginMethodModal";
 
-const SwapForm = ({
-	base,
-	counter,
-	setBase,
-	setCounter,
-	isEmbedded,
-	assetsList,
-}) => {
+const SwapForm = ({ base, counter, setBase, setCounter, assetsList }) => {
 	const [hasError, setHasError] = useState(false);
 
 	const [baseAmount, setBaseAmount] = useState("");
@@ -301,8 +294,8 @@ const SwapForm = ({
 	};
 
 	return (
-		<div className="bg-white p-6 rounded-4xl space-y-4">
-			<div className="flex flex-col gap-2 relative">
+		<div className="relative p-2 md:p-6 rounded-4xl md:max-w-2xl space-y-8">
+			<div className="flex flex-col gap-3 relative">
 				<SwapFormRow
 					isBase
 					asset={base}
@@ -318,7 +311,6 @@ const SwapForm = ({
 							asset={base}
 						/>
 					}
-					isEmbedded={isEmbedded}
 				/>
 
 				<SwapFormDivider pending={estimatePending} onRevert={revertAssets} />
@@ -339,7 +331,6 @@ const SwapForm = ({
 							sourceAsset={base}
 						/>
 					}
-					isEmbedded={isEmbedded}
 				/>
 			</div>
 
@@ -357,7 +348,7 @@ const SwapForm = ({
 			<NoTrustline asset={counter} isRounded />
 
 			<button
-				className="bg-green-400 w-full p-2 text-white rounded-xl cursor-pointer"
+				className="bg-[#0F172A] font-semibold w-full p-4 text-white rounded-full cursor-pointer disabled:cursor-not-allowed disabled:bg-gray-400 disabled:opacity-50"
 				disabled={
 					hasError ||
 					(account && isInsufficient) ||

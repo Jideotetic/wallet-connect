@@ -91,7 +91,7 @@ const SwapPage = () => {
 	}
 
 	return (
-		<main className="min-h-screen flex items-center justify-center bg-gray-50">
+		<main className="min-h-screen relative text-base flex items-center justify-center bg-gray-200">
 			<SwapForm
 				base={base}
 				counter={counter}

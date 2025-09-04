@@ -6,7 +6,7 @@ import { AmmRoutes } from "constants/routes";
 import { respondDown } from "web/mixins";
 import { Breakpoints, COLORS } from "web/styles";
 
-import RightIcon from "assets/icon-arrow-right-long.svg";
+import { FaLongArrowAltRight } from "react-icons/fa";
 
 const Container = styled.div`
 	width: 25%;
@@ -50,15 +50,6 @@ const PoolAssets = styled.div`
 	}
 `;
 
-const ArrowRight = styled(RightIcon)`
-	margin: 2rem auto 0;
-
-	${respondDown(Breakpoints.md)`
-        margin: 0 auto;
-        transform: rotate(90deg);
-    `}
-`;
-
 const Fee = styled.div`
 	font-size: 1.6rem;
 	line-height: 1.8rem;
@@ -74,7 +65,7 @@ const PathPool = ({ baseIcon, counterIcon, fee, address, isLastPool }) => (
 			</PoolAssets>
 			<Fee>{(Number(fee) * 100).toFixed(2)}%</Fee>
 		</Pool>
-		{!isLastPool && <ArrowRight />}
+		{!isLastPool && <FaLongArrowAltRight />}
 	</Container>
 );
 

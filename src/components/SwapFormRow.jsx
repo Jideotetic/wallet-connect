@@ -2,7 +2,6 @@ import BigNumber from "bignumber.js";
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 import { NumericFormat } from "react-number-format";
-import styled from "styled-components";
 
 import { formatBalance } from "helpers/format-number";
 
@@ -10,10 +9,7 @@ import useAuthStore from "store/authStore/useAuthStore";
 
 import { TokenType } from "types/token";
 
-import { respondDown, textEllipsis } from "web/mixins";
-import { Breakpoints, COLORS } from "web/styles";
-
-import { FaInfo } from "react-icons/fa";
+import { COLORS } from "web/styles";
 
 import AssetPicker from "./AssetPicker";
 import BlankInput from "./inputs/BlankInput";
@@ -22,59 +18,7 @@ import Tooltip from "./Tooltip";
 import PercentButtons from "./PercentButtons";
 
 import { TOOLTIP_POSITION } from "constants/tool-tip";
-
-const Balance = styled.div`
-	font-size: 1.4rem;
-	line-height: 1.6rem;
-	color: ${COLORS.grayText};
-	display: inline-flex;
-	align-items: center;
-	white-space: nowrap;
-	width: 100%;
-
-	svg {
-		margin-left: 0.4rem;
-	}
-`;
-
-const BalanceLabel = styled.span`
-	text-align: right;
-	${respondDown(Breakpoints.sm)`
-        display: none;
-    `}
-`;
-
-const BalanceClickable = styled.span`
-	cursor: pointer;
-
-	&:hover {
-		color: ${COLORS.titleText};
-	}
-`;
-
-const BalanceValue = styled.span`
-	width: 100%;
-	${textEllipsis};
-	text-align: right;
-`;
-
-const TooltipInner = styled.div`
-	display: flex;
-	flex-direction: column;
-	color: ${COLORS.white};
-	font-size: 1.2rem;
-	line-height: 2rem;
-`;
-
-const TooltipRow = styled.div`
-	display: flex;
-	justify-content: space-between;
-	gap: 1.2rem;
-
-	&:last-child:not(:first-child) {
-		font-weight: 700;
-	}
-`;
+import { IoIosInformationCircleOutline } from "react-icons/io";
 
 const SwapFormRow = ({
 	isBase,
@@ -124,7 +68,7 @@ const SwapFormRow = ({
 	};
 
 	return (
-		<div className="flex items-center bg-[#FAFAFB] rounded-2xl p-8">
+		<div className="flex items-center justify-between bg-white rounded-md p-4 border border-gray-200">
 			<div className="flex flex-col">
 				<span>{isBase ? "Sell" : "Buy"}</span>
 				<NumericFormat
@@ -143,7 +87,7 @@ const SwapFormRow = ({
 				{usdEquivalent}
 			</div>
 
-			<div>
+			<div className="space-y-1">
 				{isBase ? (
 					<PercentButtons setPercent={setPercent} />
 				) : (
@@ -155,21 +99,22 @@ const SwapFormRow = ({
 					assetsList={assetsList}
 				/>
 				{balance !== null && Boolean(account) && (
-					<Balance>
-						<BalanceValue>
-							<BalanceLabel>
-								{isBase ? "Available: " : "Balance: "}
-							</BalanceLabel>
+					<div className="flex items-center w-fit ml-auto">
+						<div className="flex items-center text-gray-500">
+							<div>{isBase ? "Available: " : "Balance: "}</div>
 							{isBase ? (
-								<BalanceClickable onClick={() => setPercent(100)}>
+								<div
+									className="cursor-pointer text-gray-500"
+									onClick={() => setPercent(100)}
+								>
 									{asset.type === TokenType.soroban
 										? Number(balance).toFixed(asset.decimal)
 										: formatBalance(account.getAvailableForSwapBalance(asset))}
-								</BalanceClickable>
+								</div>
 							) : (
 								formatBalance(balance, true)
 							)}
-						</BalanceValue>
+						</div>
 						{isBase && (
 							<Tooltip
 								showOnHover
@@ -180,26 +125,26 @@ const SwapFormRow = ({
 										: TOOLTIP_POSITION.right
 								}
 								content={
-									<TooltipInner>
+									<div className="flex flex-col text-gray-600 gap-1">
 										{assetReserves ? (
 											assetReserves.map(({ label, value }) => (
-												<TooltipRow key={label}>
+												<div className="flex justify-between gap-4" key={label}>
 													<span>{label}</span>
 													<span>
 														{value} {asset.code}
 													</span>
-												</TooltipRow>
+												</div>
 											))
 										) : (
 											<DotsLoader />
 										)}
-									</TooltipInner>
+									</div>
 								}
 							>
-								<FaInfo />
+								<IoIosInformationCircleOutline />
 							</Tooltip>
 						)}
-					</Balance>
+					</div>
 				)}
 			</div>
 		</div>
