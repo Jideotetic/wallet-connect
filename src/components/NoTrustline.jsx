@@ -1,6 +1,5 @@
 import * as React from "react";
 import { useState } from "react";
-import styled from "styled-components";
 
 import ErrorHandler from "helpers/error-handler";
 import { openCurrentWalletIfExist } from "helpers/wallet-connect-helpers";
@@ -17,55 +16,13 @@ import { BuildSignAndSubmitStatuses } from "services/wallet-connect.service";
 
 import { TokenType } from "types/token";
 
-import { respondDown } from "web/mixins";
-import { Breakpoints, COLORS } from "web/styles";
-
-
 import { FaPlus } from "react-icons/fa";
 
 import Asset from "./Asset";
-import Button from "./buttons/Button";
-
-const TrustlineBlock = styled.div`
-	display: flex;
-	flex-direction: column;
-	padding: 3.2rem;
-	background-color: ${COLORS.lightGray};
-	margin-top: 1.6rem;
-	border-radius: ${({ $isRounded }) => ($isRounded ? "4rem" : "0.6rem")};
-
-	p {
-		font-size: 1.6rem;
-		line-height: 2.8rem;
-		color: ${COLORS.grayText};
-	}
-`;
-
-const TrustlineBlockTitle = styled.div`
-	display: flex;
-	align-items: center;
-	gap: 0.8rem;
-	font-size: 1.6rem;
-	font-weight: 700;
-	line-height: 2.8rem;
-`;
-
-const TrustlineButton = styled(Button)`
-	width: fit-content;
-
-	${respondDown(Breakpoints.md)`
-        width: 100%;
-        margin-top: 2rem;
-    `}
-	svg {
-		margin-left: 0.8rem;
-	}
-`;
 
 const NoTrustline = ({
 	asset,
 	onlyButton,
-	isRounded,
 	closeModalAfterSubmit,
 	...props
 }) => {
@@ -111,31 +68,39 @@ const NoTrustline = ({
 
 	if (onlyButton) {
 		return (
-			<Button onClick={() => addTrust()} pending={trustlinePending} {...props}>
+			<button
+				className="bg-[#0F172A] font-semibold w-full p-4 text-white rounded-full cursor-pointer disabled:cursor-not-allowed disabled:bg-gray-400 disabled:opacity-50"
+				onClick={() => addTrust()}
+				disabled={trustlinePending}
+				{...props}
+			>
 				add trustline
-			</Button>
+			</button>
 		);
 	}
 
 	return (
-		<TrustlineBlock {...props} $isRounded={isRounded}>
-			<TrustlineBlockTitle>
+		<div
+			className="flex flex-col gap-3 p-4 bg-white rounded-md text-[#6B6C83]"
+			{...props}
+		>
+			<div className="flex items-center gap-3.5 font-bold text-xl">
 				<Asset asset={asset} onlyLogo />{" "}
 				<span>{asset.code} trustline missing</span>
-			</TrustlineBlockTitle>
+			</div>
 			<p>
 				You can't receive the {asset.code} asset because you haven't added this
 				trustline. Please add the {asset.code} trustline to continue the
 				transaction.
 			</p>
-			<TrustlineButton
+			<button
+				className="bg-[#0F172A] font-semibold w-fit flex items-center gap-2 p-4 text-white rounded-full cursor-pointer disabled:cursor-not-allowed disabled:bg-gray-400 disabled:opacity-50"
 				onClick={() => addTrust()}
-				pending={trustlinePending}
-				isRounded={isRounded}
+				disabled={trustlinePending}
 			>
 				add {asset.code} trustline <FaPlus />
-			</TrustlineButton>
-		</TrustlineBlock>
+			</button>
+		</div>
 	);
 };
 

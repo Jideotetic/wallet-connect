@@ -19,6 +19,7 @@ const ModalWrapper = styled.div`
 	bottom: 0;
 	left: 0;
 	${flexAllCenter};
+	border: 2px solid red;
 
 	&:last-child {
 		background: rgba(15, 0, 35, 0.8);
@@ -39,6 +40,7 @@ const ModalInner = styled.div`
 		$withBackground ? "0 0 1rem" : "6.4rem 0 0"};
 	animation: ${({ $isShow }) => ($isShow ? "opening 300ms" : "closing 300ms")};
 	position: relative;
+	border: 2px solid green;
 
 	${respondDown(Breakpoints.md)`
         position: fixed;
@@ -173,7 +175,7 @@ export const ModalBody = ({
 	}, []);
 
 	return (
-		<ModalWrapper>
+		<div className="fixed z-50 top-0 right-0 bottom-0 left-0 flex items-center justify-center bg-black/80 border-3 border-red-600">
 			<ModalInner
 				ref={ref}
 				$isShow={isShow}
@@ -205,6 +207,6 @@ export const ModalBody = ({
 					{React.cloneElement(children, { confirm, close, params })}
 				</ModalContent>
 			</ModalInner>
-		</ModalWrapper>
+		</div>
 	);
 };

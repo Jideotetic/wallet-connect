@@ -10,6 +10,7 @@ export const ModalWrapper = styled.div`
 	overflow-y: scroll;
 	overflow-x: hidden;
 	${customScroll};
+	border: 4px solid yellow;
 
 	min-height: ${({ $minHeight }) => $minHeight ?? "auto"};
 	max-height: calc(

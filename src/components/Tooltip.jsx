@@ -346,7 +346,7 @@ const Tooltip = ({
 
 	const getPositionClasses = () => {
 		const baseClasses =
-			"absolute bg-gray-300 flex flex-row items-center justify-center shadow-xl rounded whitespace-nowrap";
+			"absolute bg-gray-300 text-xs flex flex-row items-center justify-center shadow-xl rounded whitespace-nowrap";
 		const paddingClass = withoutPadding ? "p-0" : "py-2 px-3";
 		const visibilityClass = positionInProgress ? "invisible" : "visible";
 

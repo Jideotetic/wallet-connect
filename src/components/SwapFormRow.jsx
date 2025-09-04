@@ -87,12 +87,12 @@ const SwapFormRow = ({
 				{usdEquivalent}
 			</div>
 
-			<div className="space-y-1">
-				{isBase ? (
+			<div className="space-y-1 shrink-0">
+				{/* {isBase ? (
 					<PercentButtons setPercent={setPercent} />
 				) : (
 					<div style={{ height: "1.8rem" }} />
-				)}
+				)} */}
 				<AssetPicker
 					asset={asset}
 					onUpdate={setAsset}

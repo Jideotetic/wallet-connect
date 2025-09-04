@@ -294,7 +294,7 @@ const SwapForm = ({ base, counter, setBase, setCounter, assetsList }) => {
 	};
 
 	return (
-		<div className="relative p-2 md:p-6 rounded-4xl md:max-w-2xl space-y-8">
+		<div className="relative p-2 md:p-6 rounded-4xl w-full md:max-w-[600px] space-y-8">
 			<div className="flex flex-col gap-3 relative">
 				<SwapFormRow
 					isBase
@@ -345,7 +345,7 @@ const SwapForm = ({ base, counter, setBase, setCounter, assetsList }) => {
 				hasError={hasError}
 			/>
 
-			<NoTrustline asset={counter} isRounded />
+			<NoTrustline asset={counter} />
 
 			<button
 				className="bg-[#0F172A] font-semibold w-full p-4 text-white rounded-full cursor-pointer disabled:cursor-not-allowed disabled:bg-gray-400 disabled:opacity-50"
