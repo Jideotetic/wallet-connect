@@ -6,7 +6,7 @@ import useOnClickOutside from "hooks/useOutsideClick";
 
 import { COLORS } from "web/styles";
 
-import ArrowDown from "assets/icon-arrow-down.svg";
+import { IoIosArrowDown } from "react-icons/io";
 
 const DropDown = styled.div`
 	width: 100%;
@@ -42,19 +42,6 @@ const DropdownItem = styled.div`
 
 const Placeholder = styled(DropdownItem)`
 	color: ${COLORS.placeholder};
-`;
-
-const DropdownArrow = styled(ArrowDown)`
-	position: absolute;
-	right: 1.4rem;
-	top: 50%;
-	padding: 1rem;
-	box-sizing: content-box;
-	transform-origin: center;
-	transform: translateY(-50%)
-		${({ $isOpen }) => ($isOpen ? "rotate(180deg)" : "")};
-	transition: transform linear 200ms;
-	margin-right: ${({ $isOpen }) => ($isOpen ? "0" : "0.1rem")};
 `;
 
 const DropdownList = styled.div`
@@ -137,7 +124,7 @@ const Select = ({
 			onClick={() => toggle()}
 			{...props}
 		>
-			<DropdownArrow $isOpen={isOpen} />
+			<IoIosArrowDown />
 			{selectedOption && !isOpen ? (
 				<DropdownItem>
 					{Boolean(selectedOption.icon) && selectedOption.icon}

@@ -5,16 +5,7 @@ import { WalletKitService } from "services/globalServices";
 
 import { IoIosArrowForward } from "react-icons/io";
 
-import ExternalLink from "./ExternalLink";
-import Label from "./Label";
-import { ModalTitle, ModalWrapper } from "./ModalAtoms";
-
-import {
-	LoginMethod,
-	LoginMethodDescription,
-	LoginMethodName,
-	LoginMethodWithDescription,
-} from "./ChooseLoginMethodModal";
+import { FaLongArrowAltRight } from "react-icons/fa";
 
 const WalletKitModal = ({ params, close }) => {
 	const [isAvailableMap, setIsAvailableMap] = useState(null);
@@ -36,12 +27,13 @@ const WalletKitModal = ({ params, close }) => {
 	}, [modules]);
 
 	return (
-		<ModalWrapper>
-			<ModalTitle>Stellar Wallet Kit</ModalTitle>
+		<div className="overflow-y-auto h-full">
+			<h1 className="mb-4 text-2xl">Stellar Wallet Kit</h1>
 
 			{params.modules.map(
 				({ productName, productIcon, productUrl, productId }) => (
-					<LoginMethod
+					<div
+						className={`flex items-center justify-between p-4 rounded-2xl bg-gray-100 mb-2 cursor-pointer`}
 						key={productName}
 						onClick={() => {
 							if (isAvailableMap && !isAvailableMap.get(productName)) {
@@ -51,24 +43,27 @@ const WalletKitModal = ({ params, close }) => {
 							WalletKitService.login(productId);
 						}}
 					>
-						<img src={productIcon} alt={productName} width={40} height={40} />
-						<LoginMethodWithDescription>
-							<LoginMethodName>
-								{productName}{" "}
-								{productId === HOTWALLET_ID && <Label labelText="NEW!" />}
-							</LoginMethodName>
-							{isAvailableMap && !isAvailableMap.get(productName) && (
-								<LoginMethodDescription>
-									<ExternalLink href={productUrl}>Install</ExternalLink>
-								</LoginMethodDescription>
-							)}
-						</LoginMethodWithDescription>
+						<div className="flex items-center gap-2">
+							<img src={productIcon} alt={productName} width={30} height={30} />
+							<div>
+								<p>
+									{productName}{" "}
+									{/* {productId === HOTWALLET_ID && <Label labelText="NEW!" />} */}
+								</p>
+								{isAvailableMap && !isAvailableMap.get(productName) && (
+									<div className="flex items-center">
+										<a href={productUrl}>Install</a>
+										<FaLongArrowAltRight />
+									</div>
+								)}
+							</div>
+						</div>
 
 						<IoIosArrowForward />
-					</LoginMethod>
+					</div>
 				)
 			)}
-		</ModalWrapper>
+		</div>
 	);
 };
 

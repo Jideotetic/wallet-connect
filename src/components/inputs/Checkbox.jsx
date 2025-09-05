@@ -1,7 +1,7 @@
 import * as React from "react";
 import styled from "styled-components";
 
-import Tick from "assets/icon-checkbox-tick.svg";
+import { FaCheck } from "react-icons/fa";
 
 import { flexAllCenter } from "web/mixins";
 import { COLORS } from "web/styles";
@@ -50,7 +50,7 @@ const Checkbox = ({ label, checked, onChange, disabled, ...props }) => (
 			$disabled={disabled}
 			$hasLabel={Boolean(label)}
 		>
-			{checked && <Tick />}
+			{checked && <FaCheck />}
 		</CheckboxInput>
 		{Boolean(label) && <Label>{label}</Label>}
 	</CheckboxContainer>

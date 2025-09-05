@@ -15,12 +15,12 @@ import {
 } from "services/globalServices";
 import { BuildSignAndSubmitStatuses } from "services/wallet-connect.service";
 
-import { Token, TokenType } from "types/token";
+import { TokenType } from "types/token";
 
 import { respondDown } from "web/mixins";
 import { Breakpoints, COLORS } from "web/styles";
 
-import Plus from "assets/icon-plus.svg";
+import { FaPlus } from "react-icons/fa";
 
 import Asset from "basics/Asset";
 import { Button } from "basics/buttons";
@@ -132,7 +132,7 @@ const NoTrustline = ({
 				pending={trustlinePending}
 				isRounded={isRounded}
 			>
-				add {asset.code} trustline <Plus />
+				add {asset.code} trustline <FaPlus />
 			</TrustlineButton>
 		</TrustlineBlock>
 	);

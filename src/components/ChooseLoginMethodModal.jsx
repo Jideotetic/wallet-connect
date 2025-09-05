@@ -182,8 +182,8 @@ const ChooseLoginMethodModal = ({ close, params }) => {
 	};
 
 	return (
-		<div className="max-h-[calc(100vh-300px)]">
-			<h1 className="mb-4">Sign in</h1>
+		<div className="overflow-y-auto h-full">
+			<h1 className="mb-4 text-2xl">Sign in</h1>
 
 			<div
 				className="flex items-center justify-between gap-4 p-4 bg-gray-100 rounded-2xl mb-4 cursor-pointer"

@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { flexAllCenter } from "web/mixins";
 import { COLORS } from "web/styles";
 
-import ArrowRight from "assets/icon-arrow-right.svg";
+import { IoIosArrowForward } from "react-icons/io";
 
 const FloatingButtonBody = styled.button`
 	position: sticky;
@@ -89,7 +89,7 @@ const FloatingButton = ({ children, ...props }) => (
 			Chosen Pairs
 			<Description>Complete voting</Description>
 		</InfoBlock>
-		<ArrowRight />
+		<IoIosArrowForward />
 	</FloatingButtonBody>
 );
 

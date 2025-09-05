@@ -25,8 +25,8 @@ import { BuildSignAndSubmitStatuses } from "services/wallet-connect.service";
 import { respondDown } from "web/mixins";
 import { Breakpoints, COLORS } from "web/styles";
 
-import Dislike from "assets/icon-dislike-gray.svg";
-import LinkIcon from "assets/icon-external-link.svg";
+import { AiTwotoneDislike } from "react-icons/ai";
+import { FaLongArrowAltRight } from "react-icons/fa";
 
 import Button from "./buttons/Button";
 import Checkbox from "./inputs/Checkbox";
@@ -66,18 +66,6 @@ const TooltipInner = styled.span`
 
 const StyledButton = styled(Button)`
 	margin-top: 2.3rem;
-`;
-
-const Link = styled(LinkIcon)`
-	cursor: pointer;
-`;
-
-const LinkMobile = styled(Link)`
-	display: none;
-
-	${respondDown(Breakpoints.md)`
-        display: block;
-    `}
 `;
 
 const Amount = styled.span`
@@ -344,7 +332,8 @@ const VotesList = ({ votes, pair, withoutClaimDate }) => {
 										withoutDomains
 										withoutLink
 									/>
-									<LinkMobile
+									<FaLongArrowAltRight
+										className="cursor-pointer md:hidden"
 										onClick={() => {
 											goToStellarExpert(claim);
 										}}
@@ -378,7 +367,7 @@ const VotesList = ({ votes, pair, withoutClaimDate }) => {
 											}
 											showOnHover
 										>
-											<Dislike />
+											<AiTwotoneDislike />
 										</TooltipStyled>
 									)}
 								</>
@@ -405,7 +394,8 @@ const VotesList = ({ votes, pair, withoutClaimDate }) => {
 						getActionBlock(claim),
 						{
 							children: (
-								<Link
+								<FaLongArrowAltRight
+									className="cursor-pointer"
 									onClick={() => {
 										goToStellarExpert(claim);
 									}}

@@ -13,7 +13,6 @@ export const ModalBody = ({
 	params,
 	hideClose,
 	triggerClosePromise,
-	backgroundImage,
 	disableClickOutside,
 	backButtonCb,
 	state,
@@ -74,9 +73,6 @@ export const ModalBody = ({
 				className="bg-white rounded-md w-full md:max-w-[600px] p-8 h-[calc(100vh-100px)] border-3 overflow-hidden"
 				ref={ref}
 			>
-				{backgroundImage && (
-					<div className="bg-[#FAFAFB]">{backgroundImage}</div>
-				)}
 				{Boolean(backButtonCb) && (
 					<button
 						className=""
