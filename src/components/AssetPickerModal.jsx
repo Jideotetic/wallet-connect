@@ -119,7 +119,7 @@ const AssetPickerModal = ({ params, confirm }) => {
 
 	return (
 		<div className="h-full">
-			<h1 className="mb-4">Choose asset</h1>
+			<h1 className="mb-4 text-2xl">Choose asset</h1>
 
 			<input
 				className="w-full border border-gray-200 p-4 rounded-lg"

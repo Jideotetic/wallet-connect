@@ -1,6 +1,5 @@
 import * as React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import styled from "styled-components";
 
 import { POOL_TYPE } from "constants/amm";
 import { AmmRoutes, MarketRoutes } from "constants/routes";
@@ -16,9 +15,7 @@ import { ModalService } from "services/globalServices";
 
 import { TokenType } from "types/token";
 
-import { flexAllCenter, respondDown } from "web/mixins";
 import AssetInfoModal from "./AssetInfoModal";
-import { Breakpoints, COLORS } from "web/styles";
 
 import { FaLongArrowAltRight } from "react-icons/fa";
 
@@ -37,151 +34,6 @@ import {
 	RewardLabel,
 	StablePoolLabel,
 } from "./Labels";
-import { bigLogoStyles, logoStyles } from "constants/logo";
-
-const Wrapper = styled.div`
-	display: flex;
-	${({ $verticalDirections }) =>
-		$verticalDirections && "flex-direction: column;"};
-	align-items: ${({ $leftAlign }) => ($leftAlign ? "flex-start" : "center")};
-	cursor: ${({ $isClickable }) => ($isClickable ? "pointer" : "unset")};
-
-	${({ $mobileVerticalDirections }) =>
-		$mobileVerticalDirections &&
-		respondDown(Breakpoints.md)`
-            flex-direction: column;
-            align-items: flex-start;
-        `}
-`;
-
-const Icons = styled.div`
-	display: flex;
-	align-items: center;
-	min-width: 12rem;
-	justify-content: ${({ $leftAlign }) =>
-		$leftAlign ? "flex-start" : "center"};
-
-	${({ $mobileVerticalDirections }) =>
-		$mobileVerticalDirections &&
-		respondDown(Breakpoints.md)`
-              justify-content: start;
-          `}
-`;
-
-const Icon = styled.div`
-	${({ $isBig, $isCircleLogo }) =>
-		$isBig ? bigLogoStyles($isCircleLogo) : logoStyles()};
-	box-sizing: content-box;
-	position: relative;
-	border: ${({ $assetOrderNumber, $assetsCount }) =>
-		$assetsCount > $assetOrderNumber
-			? `0.3rem solid ${COLORS.white}`
-			: "unset"};
-	background-color: ${({ $assetOrderNumber, $assetsCount }) =>
-		$assetsCount > $assetOrderNumber ? COLORS.white : "unset"};
-	z-index: ${({ $assetOrderNumber, $assetsCount }) =>
-		$assetsCount - $assetOrderNumber};
-	right: ${({ $isBig, $assetOrderNumber, $assetsCount, $verticalDirections }) =>
-		`${
-			($isBig || $verticalDirections
-				? $assetOrderNumber - 1
-				: -($assetsCount - $assetOrderNumber)) * ($isBig ? 3 : 1)
-		}rem`};
-
-	${({ $mobileVerticalDirections }) =>
-		$mobileVerticalDirections &&
-		respondDown(Breakpoints.md)`
-              right: ${({ $isBig, $assetOrderNumber }) =>
-								`${(+$assetOrderNumber - 1) * ($isBig ? 3 : 1)}rem`};
-          `}
-`;
-
-const AssetsDetails = styled.div`
-	display: flex;
-	flex-direction: column;
-	margin: auto 0;
-	${({ $verticalDirections, $leftAlign }) =>
-		$verticalDirections
-			? `align-items: ${$leftAlign ? "flex-start" : "center"};
-        margin-top: 2rem;`
-			: `margin-left: 1.6rem;`};
-
-	${({ $mobileVerticalDirections }) =>
-		$mobileVerticalDirections &&
-		respondDown(Breakpoints.md)`
-              margin-left: 0;
-          `}
-`;
-
-const AssetsCodes = styled.span`
-	font-size: ${({ $bigCodes }) => ($bigCodes ? "3.6rem" : "1.6rem")};
-	line-height: ${({ $bigCodes }) => ($bigCodes ? "4.2rem" : "2.8rem")};
-	color: ${COLORS.paragraphText};
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-
-	span {
-		display: flex;
-		align-items: center;
-	}
-
-	${({ $mobileVerticalDirections }) =>
-		$mobileVerticalDirections &&
-		respondDown(Breakpoints.md)`
-            font-size: ${({ $bigCodes }) => ($bigCodes ? "3rem" : "1.6rem")};
-            line-height: ${({ $bigCodes }) => ($bigCodes ? "4rem" : "2.8rem")};
-            color: ${COLORS.buttonBackground};
-            margin-top: 0.7rem;
-            margin-bottom: 0.4rem;
-            display: flex;
-            flex-wrap: wrap;
-        `}
-`;
-
-const AssetsDomains = styled.span`
-	color: ${COLORS.grayText};
-	font-size: 1.4rem;
-	line-height: 2rem;
-	text-align: left;
-	word-break: break-word;
-
-	${respondDown(Breakpoints.md)`
-        text-align: center;
-    `}
-
-	${({ $mobileVerticalDirections }) =>
-		$mobileVerticalDirections &&
-		respondDown(Breakpoints.md)`
-                  font-size: 1.2rem;
-                  white-space: wrap;
-                  text-align: left;
-              `}
-`;
-
-const LinkCustom = styled.div`
-	cursor: pointer;
-	box-sizing: border-box;
-	height: 2.8rem;
-	${flexAllCenter};
-`;
-
-const Labels = styled.div`
-	display: flex;
-	margin-top: 0.8rem;
-`;
-
-const ArrowRight = styled(FaLongArrowAltRight)`
-	margin: 0 0.5rem;
-`;
-
-const Domain = styled.span`
-	cursor: pointer;
-	&:hover {
-		text-decoration: underline;
-		text-decoration-style: dashed;
-	}
-`;
 
 const viewOnStellarX = (event, assets) => {
 	const [base, counter] = assets;
@@ -198,16 +50,12 @@ const viewOnStellarX = (event, assets) => {
 const Market = ({
 	assets,
 	withoutDomains,
-	verticalDirections,
-	leftAlign,
 	isRewardsOn,
-	mobileVerticalDirections,
 	authRequired,
 	noLiquidity,
 	isAmmBribes,
 	isPrivateBribes,
 	boosted,
-	bigCodes,
 	bottomLabels,
 	isBigLogo,
 	isCircleLogos,
@@ -221,7 +69,6 @@ const Market = ({
 	poolType,
 	fee,
 	apyTier,
-	...props
 }) => {
 	const { assetsInfo } = useAssetsStore();
 	const navigate = useNavigate();
@@ -277,53 +124,42 @@ const Market = ({
 	};
 
 	return (
-		<Wrapper
-			$verticalDirections={verticalDirections}
-			$mobileVerticalDirections={mobileVerticalDirections}
-			$leftAlign={leftAlign}
-			$isClickable={Boolean(poolAddress)}
+		<div
 			onClick={() => {
 				if (poolAddress) {
 					navigate.push(`${AmmRoutes.analytics}${poolAddress}/`);
 				}
 			}}
-			{...props}
 		>
-			<Icons
-				$isBig={isBigLogo}
-				$verticalDirections={verticalDirections}
-				$assetsCount={assets.length}
-				$mobileVerticalDirections={mobileVerticalDirections}
-				$leftAlign={leftAlign}
-			>
-				{assets.map((asset, index) => (
-					<Icon
-						key={getAssetString(asset)}
-						$isBig={isBigLogo}
-						$isCircleLogo={isCircleLogos}
-						$assetOrderNumber={index + 1}
-						$assetsCount={assets.length}
-						$mobileVerticalDirections={mobileVerticalDirections}
-						$verticalDirections={verticalDirections}
-					>
-						<AssetLogo
-							asset={asset}
-							isBig={isBigLogo}
-							isCircle={isCircleLogos}
-						/>
-					</Icon>
-				))}
-			</Icons>
-			<AssetsDetails
-				$verticalDirections={verticalDirections}
-				$mobileVerticalDirections={mobileVerticalDirections}
-				$leftAlign={leftAlign}
-			>
-				<AssetsCodes
-					$mobileVerticalDirections={mobileVerticalDirections}
-					$bigCodes={bigCodes}
-				>
-					<span>
+			<div className="flex justify-center items-center gap-2">
+				{assets.reduce((acc, asset, index) => {
+					const assetKey = getAssetString(asset);
+
+					if (index > 0) {
+						acc.push(
+							<span key={`arrow-${index}`} className="text-gray-500">
+								→
+							</span>
+						);
+					}
+
+					acc.push(
+						<div key={assetKey}>
+							<AssetLogo
+								asset={asset}
+								isBig={isBigLogo}
+								isCircle={isCircleLogos}
+							/>
+						</div>
+					);
+
+					return acc;
+				}, [])}
+			</div>
+
+			<div className="flex flex-col items-center justify-center mt-2">
+				<div className="flex items-center font-bold mb-2">
+					<span className="flex items-center gap-1">
 						{assets.map((asset, index) => (
 							<React.Fragment key={getAssetString(asset)}>
 								{index > 0 ? (
@@ -344,12 +180,16 @@ const Market = ({
 					{!bottomLabels && labels}
 
 					{!withoutLink && (
-						<LinkCustom onClick={(e) => viewOnStellarX(e, assets)}>
+						<div
+							className="flex cursor-pointer items-center justify-center"
+							onClick={(e) => viewOnStellarX(e, assets)}
+						>
 							<FaLongArrowAltRight />
-						</LinkCustom>
+						</div>
 					)}
 					{withMarketLink && (
 						<Link
+							className="cursor-pointer"
 							onClick={(e) => {
 								e.stopPropagation();
 							}}
@@ -360,9 +200,9 @@ const Market = ({
 							<FaLongArrowAltRight />
 						</Link>
 					)}
-				</AssetsCodes>
+				</div>
 				{!withoutDomains && (
-					<AssetsDomains $mobileVerticalDirections={mobileVerticalDirections}>
+					<div className="text-center">
 						{assets.map((asset, index) => {
 							const [name, domain] = getAssetDetails(asset);
 							return (
@@ -372,19 +212,22 @@ const Market = ({
 									{asset?.isNative?.() ? (
 										domain
 									) : (
-										<Domain onClick={(e) => onDomainClick(e, asset)}>
+										<span
+											className="cursor-pointer"
+											onClick={(e) => onDomainClick(e, asset)}
+										>
 											{domain}
-										</Domain>
+										</span>
 									)}
 									)
 								</span>
 							);
 						})}
-					</AssetsDomains>
+					</div>
 				)}
-				{bottomLabels && <Labels>{labels}</Labels>}
-			</AssetsDetails>
-		</Wrapper>
+				{bottomLabels && <div className="flex mt-2">{labels}</div>}
+			</div>
+		</div>
 	);
 };
 

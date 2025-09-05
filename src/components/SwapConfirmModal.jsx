@@ -2,7 +2,6 @@ import * as StellarSdk from "@stellar/stellar-sdk";
 
 import * as React from "react";
 import { useEffect, useState } from "react";
-import styled from "styled-components";
 
 import { getPathPoolsFee } from "api/amm";
 
@@ -21,58 +20,15 @@ import { BuildSignAndSubmitStatuses } from "services/wallet-connect.service";
 
 import { TokenType } from "types/token";
 
-import { flexAllCenter, flexRowSpaceBetween, respondDown } from "web/mixins";
-import { Breakpoints, COLORS } from "web/styles";
-
 import AssetLogo from "./AssetLogo";
-import Button from "./buttons/Button";
 import DotsLoader from "./loaders/DotsLoader";
 import PageLoader from "./loaders/PageLoader";
 import Market from "./Market";
-import {
-	ModalDescription,
-	ModalTitle,
-	ModalWrapper,
-	StickyButtonWrapper,
-} from "./ModalAtoms";
 
 import PathPool from "../web/components/SwapConfirmModal/PathPool/PathPool";
 
 import SuccessModal from "./SuccessModal";
 import { SWAP_SLIPPAGE_ALIAS } from "./SwapSettingsModal";
-
-const AssetsInfo = styled.div`
-	${flexAllCenter};
-	padding: 3.5rem 0;
-	background-color: ${COLORS.lightGray};
-	border-radius: 0.5rem;
-`;
-
-const DescriptionRow = styled.div`
-	${flexRowSpaceBetween};
-	color: ${COLORS.grayText};
-	font-size: 1.6rem;
-	padding: 1.5rem 0;
-
-	span:last-child {
-		color: ${COLORS.paragraphText};
-	}
-`;
-
-const Divider = styled.div`
-	border-bottom: 0.1rem dashed ${COLORS.gray};
-	margin: 3.2rem 0;
-`;
-
-const Pools = styled.div`
-	display: flex;
-	flex-wrap: wrap;
-
-	${respondDown(Breakpoints.md)`
-        flex-direction: column;
-        width: 100%;
-    `}
-`;
 
 const STROOP = 0.0000001;
 
@@ -225,28 +181,26 @@ const SwapConfirmModal = ({ params, confirm }) => {
 	};
 
 	return (
-		<ModalWrapper>
-			<ModalTitle>Confirm swap</ModalTitle>
-			<ModalDescription>
-				Please check all the details to make a swap
-			</ModalDescription>
-			<AssetsInfo>
+		<div className="overflow-y-auto h-full">
+			<h1 className="mb-4 text-2xl">Confirm swap</h1>
+			<p className="mb-2">Please check all the details to make a swap</p>
+			<div className="flex items-center justify-center rounded-md py-10 px-2 bg-gray-100">
 				<Market verticalDirections assets={[base, counter]} />
-			</AssetsInfo>
-			<DescriptionRow>
-				<span>You give</span>
+			</div>
+			<div className="flex justify-between mt-2">
+				<span className="text-gray-400">You give</span>
 				<span>
 					{formatBalance(Number(baseAmount))} {base.code}
 				</span>
-			</DescriptionRow>
-			<DescriptionRow>
-				<span>You get (estimate)</span>
+			</div>
+			<div className="flex justify-between mt-2">
+				<span className="text-gray-400">You get (estimate)</span>
 				<span>
 					{formatBalance(Number(counterAmount))} {counter.code}
 				</span>
-			</DescriptionRow>
-			<DescriptionRow>
-				<span>Exchange rate</span>
+			</div>
+			<div className="flex justify-between mt-2">
+				<span className="text-gray-400">Exchange rate</span>
 				<span>
 					1 {base.code} ={" "}
 					{formatBalance(
@@ -256,10 +210,10 @@ const SwapConfirmModal = ({ params, confirm }) => {
 					)}{" "}
 					{counter.code}
 				</span>
-			</DescriptionRow>
+			</div>
 
-			<DescriptionRow>
-				<span>Maximum transaction fee:</span>
+			<div className="flex justify-between mt-2">
+				<span className="text-gray-400">Maximum transaction fee:</span>
 				<span>
 					{txFee !== null ? (
 						`${formatBalance(
@@ -271,17 +225,17 @@ const SwapConfirmModal = ({ params, confirm }) => {
 						<DotsLoader />
 					)}
 				</span>
-			</DescriptionRow>
+			</div>
 
-			<DescriptionRow>
-				<span>Pools:</span>
+			<div className="flex justify-between mt-2">
+				<span className="text-gray-400">Pools:</span>
 				<span />
-			</DescriptionRow>
+			</div>
 
 			{!fees || !pathTokens ? (
 				<PageLoader />
 			) : (
-				<Pools>
+				<div className="flex items-start flex-wrap gap-1 mb-2">
 					{bestPools.map((pool, index) => {
 						const base = pathTokens[index];
 						const counter = pathTokens[index + 1];
@@ -296,16 +250,17 @@ const SwapConfirmModal = ({ params, confirm }) => {
 							/>
 						);
 					})}
-				</Pools>
+				</div>
 			)}
 
-			<Divider />
-			<StickyButtonWrapper>
-				<Button fullWidth isBig pending={swapPending} onClick={() => swap()}>
-					Confirm Swap
-				</Button>
-			</StickyButtonWrapper>
-		</ModalWrapper>
+			<button
+				className="bg-[#0F172A] my-6 font-semibold w-full p-4 text-white rounded-full cursor-pointer disabled:cursor-not-allowed disabled:bg-gray-400 disabled:opacity-50"
+				disabled={swapPending}
+				onClick={() => swap()}
+			>
+				Confirm Swap
+			</button>
+		</div>
 	);
 };
 

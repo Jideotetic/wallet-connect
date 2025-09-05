@@ -20,18 +20,13 @@ const AssetsInfo = styled.div`
 	gap: 2.4rem;
 `;
 
-const StyledButton = styled(Button)`
-	margin-left: auto;
-	margin-top: 4.8rem;
-`;
-
 const SuccessModal = ({ params, close }) => {
 	const { assets, amounts, title, isSwap, hash } = params;
 
 	return (
-		<ModalWrapper>
-			<ModalTitle>{title ?? "Success"}</ModalTitle>
-			<AssetsInfo>
+		<div className="overflow-y-auto h-full">
+			<h1 className="mb-4 text-2xl">{title ?? "Success"}</h1>
+			<div className="flex flex-col gap-4 items-center justify-center rounded-md py-10 px-2 bg-gray-100">
 				<Market
 					assets={assets}
 					verticalDirections
@@ -39,17 +34,22 @@ const SuccessModal = ({ params, close }) => {
 					amounts={amounts}
 					isSwapResult={isSwap}
 				/>
-				<ExternalLink
+				<a
 					href={`https://stellar.expert/explorer/${
 						getIsTestnetEnv() ? "testnet" : "public"
 					}/tx/${hash}`}
 				>
 					View on Explorer
-				</ExternalLink>
-			</AssetsInfo>
+				</a>
+			</div>
 
-			<StyledButton onClick={() => close()}>done</StyledButton>
-		</ModalWrapper>
+			<button
+				className="bg-[#0F172A] my-6 font-semibold w-full p-4 text-white rounded-full cursor-pointer disabled:cursor-not-allowed disabled:bg-gray-400 disabled:opacity-50"
+				onClick={() => close()}
+			>
+				Done
+			</button>
+		</div>
 	);
 };
 
