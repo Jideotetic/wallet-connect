@@ -1,7 +1,6 @@
 import * as StellarSdk from "@stellar/stellar-sdk";
 import * as React from "react";
 import { useEffect, useMemo, useState } from "react";
-import styled from "styled-components";
 
 import { USDx_CODE, USDx_ISSUER } from "constants/assets";
 
@@ -21,133 +20,9 @@ import { StellarService } from "services/globalServices";
 
 import { TokenType } from "types/token";
 
-import { customScroll, respondDown, textEllipsis } from "web/mixins";
-import { Breakpoints, COLORS } from "web/styles";
-
 import Asset from "./Asset";
-import Input from "./inputs/Input";
-import CircleLoader from "./loaders/CircleLoader";
+
 import PageLoader from "./loaders/PageLoader";
-
-const StyledInput = styled(Input)`
-	margin-top: 2.4rem;
-`;
-
-const DefaultAssets = styled.div`
-	display: flex;
-	justify-content: space-between;
-	margin-top: 1.6rem;
-
-	${respondDown(Breakpoints.md)`
-        flex-wrap: wrap;
-        gap: 0;
-    `}
-`;
-
-const DefaultAsset = styled.div`
-	height: 4.8rem;
-	border-radius: 3.8rem;
-	border: 0.1rem solid ${COLORS.gray};
-	padding: 0.8rem;
-	background-color: ${COLORS.white};
-	align-items: center;
-	cursor: pointer;
-
-	&:hover {
-		border-color: ${COLORS.grayText};
-	}
-
-	${respondDown(Breakpoints.md)`
-        margin-bottom: 1rem;
-    `};
-`;
-
-const AssetsList = styled.div`
-	display: flex;
-	flex-direction: column;
-	max-height: 45vh;
-	${customScroll};
-	overflow-y: auto;
-	margin-top: 2.5rem;
-
-	${respondDown(Breakpoints.md)`
-        margin-bottom: 1rem;
-        height: calc(100vh - 35rem);
-        max-height: unset;
-        width: 100%;
-    `};
-`;
-
-const AssetStyled = styled(Asset)`
-	${respondDown(Breakpoints.md)`
-        width: ${({ $isLogged }) => ($isLogged ? "40%" : "80%")};
-    `}
-`;
-
-const AssetItem = styled.div`
-	display: flex;
-	align-items: center;
-	padding: 0.8rem;
-	cursor: pointer;
-	justify-content: space-between;
-
-	&:hover {
-		background-color: ${COLORS.lightGray};
-	}
-
-	${respondDown(Breakpoints.md)`
-        width: 100%;
-    `};
-`;
-
-const Balances = styled.div`
-	display: flex;
-	flex-direction: column;
-	align-items: flex-end;
-	color: ${COLORS.grayText};
-	font-size: 1.4rem;
-	line-height: 2rem;
-
-	span:first-child {
-		font-size: 1.6rem;
-		line-height: 2.8rem;
-		color: ${COLORS.paragraphText};
-		text-align: right;
-	}
-
-	${respondDown(Breakpoints.md)`
-        width: 40%;
-        font-size: 1.2rem;
-        
-        span {
-            width: 100%;
-            ${textEllipsis};
-            text-align: right;
-        }
-        
-        span:first-child {
-            font-size: 1.2rem;
-            line-height: 2rem;
-            white-space: nowrap;
-        }
-    `}
-`;
-
-const LoaderWrapper = styled.div`
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	min-height: 45vh;
-	margin-top: 2.5rem;
-`;
-
-const EmptyState = styled.span`
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	color: ${COLORS.grayText};
-	line-height: 6.4rem;
-`;
 
 const DEFAULT_ASSETS = [
 	StellarService.createLumen(),
@@ -243,7 +118,7 @@ const AssetPickerModal = ({ params, confirm }) => {
 	};
 
 	return (
-		<div className="max-h-[calc(100vh-300px)]">
+		<div className="h-full">
 			<h1 className="mb-4">Choose asset</h1>
 
 			<input
@@ -253,16 +128,11 @@ const AssetPickerModal = ({ params, confirm }) => {
 				value={search}
 				onChange={(e) => setSearch(e.target.value)}
 			/>
-			{/* <StyledInput
-				placeholder="Search asset or enter home domain"
-				value={search}
-				onChange={(e) => setSearch(e.target.value)}
-				postfix={searchPending ? <CircleLoader size="small" /> : null}
-			/> */}
-			<div className="flex mt-4 justify-evenly flex-wrap">
+
+			<div className="flex mt-4 justify-evenly flex-wrap p-2 shadow-2xl">
 				{DEFAULT_ASSETS.map((asset) => (
 					<div
-						className=" flex bg-white items-center border rounded-4xl gap-2 cursor-pointer p-1"
+						className="flex w-fit ml-auto border border-gray-200 items-center rounded-4xl gap-2 cursor-pointer p-1"
 						key={getAssetString(asset)}
 						onClick={() => chooseAsset(asset)}
 					>
@@ -271,16 +141,20 @@ const AssetPickerModal = ({ params, confirm }) => {
 				))}
 			</div>
 			{account && !balances.length ? (
-				<LoaderWrapper>
+				<div className="h-96 flex flex-col">
 					<PageLoader />
-				</LoaderWrapper>
+				</div>
 			) : (
-				<AssetsList>
+				<div className="h-96 flex overflow-y-auto flex-col">
 					{filteredAssets.map(({ token, balance, nativeBalance }) => (
-						<AssetItem key={token.contract} onClick={() => chooseAsset(token)}>
-							<AssetStyled asset={token} $isLogged={isLogged} />
+						<div
+							className="flex items-center p-2 cursor-pointer justify-between hover:bg-gray-100"
+							key={token.contract}
+							onClick={() => chooseAsset(token)}
+						>
+							<Asset asset={token} $isLogged={isLogged} />
 							{Number(balance) ? (
-								<Balances>
+								<div>
 									<span>
 										{formatBalance(balance)} {token.code}
 									</span>
@@ -295,14 +169,14 @@ const AssetPickerModal = ({ params, confirm }) => {
 											)}
 										</span>
 									)}
-								</Balances>
+								</div>
 							) : null}
-						</AssetItem>
+						</div>
 					))}
 					{filteredAssets.length === 0 && (
-						<EmptyState>No assets found</EmptyState>
+						<div className="p-8 text-center">No assets found</div>
 					)}
-				</AssetsList>
+				</div>
 			)}
 		</div>
 	);

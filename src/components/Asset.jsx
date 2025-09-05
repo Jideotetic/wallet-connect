@@ -13,65 +13,11 @@ import { ModalService, StellarService } from "services/globalServices";
 
 import { TokenType } from "types/token";
 
-import { flexAllCenter, respondDown, textEllipsis } from "web/mixins";
 import AssetInfoModal from "components/AssetInfoModal";
 import { Breakpoints, COLORS } from "web/styles";
 
-import { FaInfo } from "react-icons/fa";
-
 import AssetLogo from "./AssetLogo";
 import DotsLoader from "./loaders/DotsLoader";
-import Tooltip from "./Tooltip";
-import { TOOLTIP_POSITION } from "constants/tool-tip";
-
-const Container = styled.div`
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	box-sizing: border-box;
-`;
-
-const AssetDetails = styled.div`
-	display: flex;
-	width: 100%;
-	flex-direction: ${({ $inRow }) => ($inRow ? "row" : "column")};
-	margin-left: ${({ $inRow }) => ($inRow ? "0.8rem" : "1.6rem")};
-`;
-
-const AssetCode = styled.span`
-	font-size: ${({ $isBig }) => ($isBig ? "3.6rem" : "1.6rem")};
-	line-height: ${({ $isBig }) => ($isBig ? "4.2rem" : "2.8rem")};
-	color: ${COLORS.paragraphText};
-	margin-right: ${({ $inRow }) => ($inRow ? "0.3rem" : "0")};
-`;
-
-const AssetDomain = styled.span`
-	color: ${({ $inRow }) => ($inRow ? COLORS.paragraphText : COLORS.grayText)};
-	font-size: ${({ $inRow }) => ($inRow ? "1.6rem" : "1.4rem")};
-	line-height: ${({ $inRow }) => ($inRow ? "2.8rem" : "2rem")};
-	word-break: break-word;
-
-	${respondDown(Breakpoints.md)`
-        white-space: nowrap;
-        ${({ $withMobileView }) => $withMobileView && "display: none;"}
-        ${textEllipsis};
-    `}
-`;
-
-const InfoIcon = styled.div`
-	${flexAllCenter};
-	display: none;
-
-	${respondDown(Breakpoints.md)`
-          ${({ $withMobileView }) => $withMobileView && "display: flex;"}
-    `}
-`;
-
-const DomainLink = styled.a`
-	color: ${COLORS.purple};
-	text-decoration: none;
-	cursor: pointer;
-`;
 
 const DomainDetails = styled.span`
 	cursor: pointer;
@@ -94,14 +40,11 @@ const DomainDetailsLink = styled.a`
 const Asset = ({
 	asset,
 	inRow,
-	withMobileView,
-	isBig,
 	onlyLogo,
 	onlyLogoSmall,
 	logoAndCode,
 	hasDomainLink,
 	hasAssetDetailsLink,
-	...props
 }) => {
 	const { assetsInfo } = useAssetsStore();
 
@@ -139,9 +82,13 @@ const Asset = ({
 
 		if (hasDomainLink && assetInfo.home_domain) {
 			return (
-				<DomainLink href={`https://${assetInfo.home_domain}`} target="_blank">
+				<a
+					className="cursor-pointer text-purple-400 no-underline"
+					href={`https://${assetInfo.home_domain}`}
+					target="_blank"
+				>
 					{domainView}
-				</DomainLink>
+				</a>
 			);
 		}
 
@@ -168,30 +115,27 @@ const Asset = ({
 
 	if (logoAndCode) {
 		return (
-			<Container {...props}>
+			<div className="flex items-center gap-2">
 				<AssetLogo asset={asset} />
-				<AssetDetails $inRow>
-					<AssetCode $inRow>{asset.code}</AssetCode>
-				</AssetDetails>
-			</Container>
+				<div>{asset.code}</div>
+			</div>
 		);
 	}
 
 	return (
-		<Container {...props}>
+		<div className="flex items-center w-full gap-2">
 			<AssetLogo asset={asset} />
-			<AssetDetails $inRow={inRow}>
-				<AssetCode $inRow={inRow} $isBig={isBig}>
-					{asset.code}
-				</AssetCode>
-				<AssetDomain $withMobileView={withMobileView} $inRow={inRow}>
+			<div className="space-y-1">
+				<div>{asset.code}</div>
+				<div>
 					{inRow
 						? ""
 						: assetInfo?.name ||
 						  (asset.type === TokenType.soroban ? asset.name : asset.code)}{" "}
 					({domain})
-				</AssetDomain>
-				<Tooltip
+				</div>
+				{/* <Tooltip
+					className="border-2"
 					content={
 						<span>
 							{asset.type === TokenType.soroban ? (
@@ -209,9 +153,9 @@ const Asset = ({
 					<InfoIcon $withMobileView={withMobileView}>
 						<FaInfo />
 					</InfoIcon>
-				</Tooltip>
-			</AssetDetails>
-		</Container>
+				</Tooltip> */}
+			</div>
+		</div>
 	);
 };
 
