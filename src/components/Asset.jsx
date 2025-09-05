@@ -14,10 +14,11 @@ import { ModalService, StellarService } from "services/globalServices";
 import { TokenType } from "types/token";
 
 import AssetInfoModal from "components/AssetInfoModal";
-import { Breakpoints, COLORS } from "web/styles";
+import { COLORS } from "web/styles";
 
 import AssetLogo from "./AssetLogo";
 import DotsLoader from "./loaders/DotsLoader";
+import { TOOLTIP_POSITION } from "constants/tool-tip";
 
 const DomainDetails = styled.span`
 	cursor: pointer;
@@ -134,7 +135,7 @@ const Asset = ({
 						  (asset.type === TokenType.soroban ? asset.name : asset.code)}{" "}
 					({domain})
 				</div>
-				{/* <Tooltip
+				<Tooltip
 					className="border-2"
 					content={
 						<span>
@@ -150,10 +151,10 @@ const Asset = ({
 					position={TOOLTIP_POSITION.left}
 					showOnHover
 				>
-					<InfoIcon $withMobileView={withMobileView}>
+					<div>
 						<FaInfo />
-					</InfoIcon>
-				</Tooltip> */}
+					</div>
+				</Tooltip>
 			</div>
 		</div>
 	);
