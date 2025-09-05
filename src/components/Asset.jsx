@@ -19,6 +19,8 @@ import { COLORS } from "web/styles";
 import AssetLogo from "./AssetLogo";
 import DotsLoader from "./loaders/DotsLoader";
 import { TOOLTIP_POSITION } from "constants/tool-tip";
+import Tooltip from "./Tooltip";
+import { IoIosInformationCircleOutline } from "react-icons/io";
 
 const DomainDetails = styled.span`
 	cursor: pointer;
@@ -126,35 +128,32 @@ const Asset = ({
 	return (
 		<div className="flex items-center w-full gap-2">
 			<AssetLogo asset={asset} />
-			<div className="space-y-1">
+			<div>
 				<div>{asset.code}</div>
-				<div>
+				<div className="flex items-center gap-1">
 					{inRow
 						? ""
 						: assetInfo?.name ||
 						  (asset.type === TokenType.soroban ? asset.name : asset.code)}{" "}
 					({domain})
+					<Tooltip
+						content={
+							<span>
+								{asset.type === TokenType.soroban ? (
+									"Soroban Token"
+								) : hasAssetInfo ? (
+									assetInfo.home_domain ?? "unknown"
+								) : (
+									<DotsLoader />
+								)}
+							</span>
+						}
+						position={TOOLTIP_POSITION.right}
+						showOnHover
+					>
+						<IoIosInformationCircleOutline />
+					</Tooltip>
 				</div>
-				<Tooltip
-					className="border-2"
-					content={
-						<span>
-							{asset.type === TokenType.soroban ? (
-								"Soroban Token"
-							) : hasAssetInfo ? (
-								assetInfo.home_domain ?? "unknown"
-							) : (
-								<DotsLoader />
-							)}
-						</span>
-					}
-					position={TOOLTIP_POSITION.left}
-					showOnHover
-				>
-					<div>
-						<FaInfo />
-					</div>
-				</Tooltip>
 			</div>
 		</div>
 	);
