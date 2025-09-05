@@ -1,6 +1,5 @@
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
-import styled from "styled-components";
 
 import { COLORS } from "web/styles";
 
@@ -9,22 +8,7 @@ import { IoCopyOutline } from "react-icons/io5";
 import Tooltip from "../Tooltip";
 import { TOOLTIP_POSITION } from "constants/tool-tip";
 
-const CopyButtonContainer = styled.div`
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	font-size: 1.6rem;
-	line-height: 2.8rem;
-	color: ${({ isBlackText }) =>
-		isBlackText ? COLORS.paragraphText : COLORS.purple};
-	cursor: pointer;
-`;
-
-const Inner = styled.div`
-	color: ${COLORS.white};
-`;
-
-const CopyButton = ({ text, children, withoutLogo, isBlackText, ...props }) => {
+const CopyButton = ({ text, children, withoutLogo, ...props }) => {
 	const [isShowTooltip, setIsShowTooltip] = useState(false);
 	const timerRef = useRef(null);
 
@@ -52,19 +36,19 @@ const CopyButton = ({ text, children, withoutLogo, isBlackText, ...props }) => {
 
 	return (
 		<Tooltip
-			content={<Inner>Copied!</Inner>}
+			content={<div className="text-white">Copied!</div>}
 			position={TOOLTIP_POSITION.top}
 			isShow={isShowTooltip}
 			color={COLORS.white}
 		>
-			<CopyButtonContainer
+			<div
+				className="flex flex-row items-center text-lg gap-1 cursor-pointer"
 				onClick={() => copyText()}
 				{...props}
-				isBlackText={isBlackText}
 			>
 				{children}
 				{!withoutLogo && <IoCopyOutline />}
-			</CopyButtonContainer>
+			</div>
 		</Tooltip>
 	);
 };

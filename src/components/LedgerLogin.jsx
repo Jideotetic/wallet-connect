@@ -41,15 +41,15 @@ const LedgerLogin = ({ close }) => {
 	};
 
 	return (
-		<ModalWrapper>
-			<ModalTitle>Log in with Ledger</ModalTitle>
-			<ModalDescription>
+		<div className="overflow-y-auto h-full">
+			<h1 className="mb-4 text-2xl">Log in with Ledger</h1>
+			<p className="text-lg text-gray-500 mb-8">
 				Make sure your Ledger Wallet is connected with the Stellar application
 				open on it.
 				<br />
 				Enter the Ledger account number you want to log in to. Or use the
 				default account 44'/148'/0'.
-			</ModalDescription>
+			</p>
 
 			<form
 				onSubmit={(event) => {
@@ -58,26 +58,35 @@ const LedgerLogin = ({ close }) => {
 					onSubmit();
 				}}
 			>
-				<Input
-					value={path}
-					onChange={(e) => setPath(e.target.value)}
-					prefixCustom={<Prefix>Path: 44'/148'/</Prefix>}
-					placeholder="0"
-					type="number"
-					min="0"
-					max="2147483647"
-					onInvalid={(e) =>
-						e.target.setCustomValidity("Only integer less or equal 2147483647")
-					}
-					onInput={(e) => e.target.setCustomValidity("")}
-					inputMode="decimal"
-				/>
+				<div className="border border-gray-300 p-4 flex gap-2 rounded-md">
+					<p className="shrink-0">Path: 44'/148'/</p>
+					<input
+						className="w-full border-none outline-none"
+						value={path}
+						onChange={(e) => setPath(e.target.value)}
+						placeholder="0"
+						type="number"
+						min="0"
+						max="2147483647"
+						onInvalid={(e) =>
+							e.target.setCustomValidity(
+								"Only integer less or equal 2147483647"
+							)
+						}
+						onInput={(e) => e.target.setCustomValidity("")}
+						inputMode="decimal"
+					/>
+				</div>
 
-				<StyledButton isBig type="submit" pending={pending}>
+				<button
+					className="bg-[#0F172A] my-6 font-semibold w-full p-4 text-white rounded-full cursor-pointer disabled:cursor-not-allowed disabled:bg-gray-400 disabled:opacity-50"
+					type="submit"
+					disabled={pending}
+				>
 					connect
-				</StyledButton>
+				</button>
 			</form>
-		</ModalWrapper>
+		</div>
 	);
 };
 

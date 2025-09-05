@@ -69,26 +69,28 @@ const LoginWithPublic = ({ close }) => {
 	}, [isLogged, close]);
 
 	return (
-		<ModalWrapper>
-			<ModalTitle>Public key</ModalTitle>
-			<Description>Enter your public key, started from “G”</Description>
-			<LoginWithSecretBody>
-				<InputWrapped
+		<div className="overflow-y-auto h-full">
+			<h1 className="mb-4 text-2xl">Public key</h1>
+			<p className="text-lg text-gray-500 mb-8">
+				Enter your public key, started from “G”
+			</p>
+			<div>
+				<input
+					className="w-full p-4 border border-gray-300 rounded-md"
 					placeholder="GXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 					maxLength={56}
 					value={publicKey}
 					onChange={({ target }) => setPublicKey(target.value)}
 				/>
-				<StyledButton
-					isBig
-					disabled={!publicKey}
+				<button
+					className="bg-[#0F172A] my-6 font-semibold w-full p-4 text-white rounded-full cursor-pointer disabled:cursor-not-allowed disabled:bg-gray-400 disabled:opacity-50"
+					disabled={!publicKey || (isLoginPending ?? undefined)}
 					onClick={() => onSubmit()}
-					pending={isLoginPending ?? undefined}
 				>
 					connect
-				</StyledButton>
-			</LoginWithSecretBody>
-		</ModalWrapper>
+				</button>
+			</div>
+		</div>
 	);
 };
 

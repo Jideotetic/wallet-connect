@@ -21,6 +21,7 @@ import CopyButton from "./buttons/CopyButton";
 import ExternalLink from "./ExternalLink";
 import ToggleGroup from "basics/inputs/ToggleGroup";
 import { ModalDescription, ModalTitle, ModalWrapper } from "./ModalAtoms";
+import { FaLongArrowAltRight } from "react-icons/fa";
 
 const QRContainer = styled.div`
 	width: 100%;
@@ -132,11 +133,12 @@ const QRModal = ({ params }) => {
 	}, []);
 
 	return (
-		<ModalWrapper>
+		<div className="overflow-y-auto h-full">
 			{isMobile() && (
 				<>
-					<MobileTitle>WalletConnect</MobileTitle>
-					<ToggleGroupStyled
+					<h1 className="mb-4 text-2xl">WalletConnect</h1>
+					<div
+						className="flex w-full justify-evenly mb-4 mt-2"
 						options={[
 							{ label: "Mobile", value: ModalStates.mobile },
 							{ label: "QR code", value: ModalStates.qr },
@@ -146,7 +148,7 @@ const QRModal = ({ params }) => {
 					/>
 				</>
 			)}
-			<ModalTitle>
+			<h1 className="mb-4 text-2xl">
 				{modalState === ModalStates.qr ? "Scan QR code" : ""}
 				{isAndroid() && modalState === ModalStates.mobile
 					? "Connect to Mobile Wallet"
@@ -154,27 +156,31 @@ const QRModal = ({ params }) => {
 				{isIOS() && modalState === ModalStates.mobile
 					? "Choose your preferred wallet"
 					: ""}
-			</ModalTitle>
+			</h1>
 
 			{modalState === ModalStates.qr && (
 				<>
-					<ModalDescription $smallMarginBottom>
+					<p className="text-lg text-gray-500 mb-8">
 						Open your WalletConnect-compatible app with Stellar support, like
 						LOBSTR wallet, and scan the QR code to connect.
-					</ModalDescription>
-					<ExternalLink href="https://lobstr.freshdesk.com/support/solutions/articles/151000001589-walletconnect-how-[…]nd-use-your-stellar-wallet-from-lobstr-with-other-services">
+					</p>
+					<a
+						className="flex gap-2 items-center"
+						href="https://lobstr.freshdesk.com/support/solutions/articles/151000001589-walletconnect-how-[…]nd-use-your-stellar-wallet-from-lobstr-with-other-services"
+					>
 						How to connect LOBSTR wallet?
-					</ExternalLink>
+						<FaLongArrowAltRight />
+					</a>
 
-					<QRContainer>
+					<div className="w-full flex flex-col items-center mt-10">
 						<QRCode value={uri} size={170} />
 
-						<CopyButtonContainer>
+						<div className="mt-10">
 							<CopyButton text={uri}>
 								<span>Copy to clipboard</span>
 							</CopyButton>
-						</CopyButtonContainer>
-					</QRContainer>
+						</div>
+					</div>
 				</>
 			)}
 			{modalState === ModalStates.mobile &&
@@ -209,7 +215,7 @@ const QRModal = ({ params }) => {
 						)}
 					</>
 				))}
-		</ModalWrapper>
+		</div>
 	);
 };
 
