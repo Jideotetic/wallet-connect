@@ -1,34 +1,10 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
-import styled from "styled-components";
 
 import { LoginTypes } from "store/authStore/types";
 import useAuthStore from "store/authStore/useAuthStore";
 
 import { SorobanService, ToastService } from "services/globalServices";
-
-import Button from "./buttons/Button";
-import Input from "./inputs/Input";
-import { ModalDescription, ModalTitle, ModalWrapper } from "./ModalAtoms";
-
-import { respondDown } from "../web/mixins";
-import { Breakpoints } from "../web/styles";
-
-const LoginWithSecretBody = styled.form`
-	display: flex;
-	flex-direction: column;
-	align-items: flex-end;
-`;
-
-const InputWrapped = styled(Input)`
-	margin-bottom: 3.1rem;
-`;
-
-const StyledButton = styled(Button)`
-	${respondDown(Breakpoints.md)`
-        width: 100%;
-    `}
-`;
 
 const LoginWithSecret = ({ close }) => {
 	const [secretKey, setSecretKey] = useState("");
