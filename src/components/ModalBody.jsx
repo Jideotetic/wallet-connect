@@ -70,7 +70,7 @@ export const ModalBody = ({
 	return (
 		<div className="fixed z-50 top-0 right-0 bottom-0 left-0 flex items-center justify-center bg-black/80 p-4">
 			<div
-				className="bg-white rounded-md w-full md:max-w-[600px] p-8 h-[calc(100vh-100px)] border-3 overflow-hidden"
+				className="bg-white rounded-md w-full md:max-w-[600px] p-8  max-h-[calc(100vh-100px)] border-3 overflow-hidden"
 				ref={ref}
 			>
 				{Boolean(backButtonCb) && (
