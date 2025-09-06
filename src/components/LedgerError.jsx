@@ -1,38 +1,21 @@
 import * as React from "react";
-import styled from "styled-components";
-
-import Button from "./buttons/Button";
-import { IconFail } from "./Icons";
-import { ModalDescription, ModalTitle, ModalWrapper } from "./ModalAtoms";
-
-import { respondDown } from "../web/mixins";
-import { Breakpoints } from "../web/styles";
-
-const Title = styled(ModalTitle)`
-	margin-top: 2.4rem;
-`;
-
-const StyledButton = styled(Button)`
-	margin-top: 3.1rem;
-	margin-left: auto;
-
-	${respondDown(Breakpoints.md)`
-            width: 100%;
-        `}
-`;
 
 const LedgerError = ({ close }) => (
-	<ModalWrapper>
-		<IconFail />
-		<Title>Ledger app is unavailable</Title>
-		<ModalDescription>
+	<div className="overflow-y-auto h-full">
+		<h1 className="mb-4 text-2xl">Ledger app is unavailable</h1>
+		<p className="text-lg text-gray-500 mb-8">
 			Could not access your Ledger account. Ensure your Ledger is not locked
 			after the idle timeout, the Stellar app is opened, and the firmware
 			version is updated. If it still does not work, make sure that your Ledger
 			device is not used on another site.
-		</ModalDescription>
-		<StyledButton onClick={() => close()}>Close</StyledButton>
-	</ModalWrapper>
+		</p>
+		<button
+			className="bg-[#0F172A] my-6 font-semibold w-full p-4 text-white rounded-full cursor-pointer disabled:cursor-not-allowed disabled:bg-gray-400 disabled:opacity-50"
+			onClick={() => close()}
+		>
+			Close
+		</button>
+	</div>
 );
 
 export default LedgerError;
